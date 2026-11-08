@@ -1,0 +1,16 @@
+============================================================
+AEGISEDGE M3 END-TO-END LATENCY BENCHMARK RESULTS (30 EVENTS)
+============================================================
+Events Profiled:        30
+Timing Precision:       time.perf_counter (Microsecond accuracy)
+Minimum Latency:        25.58 ms
+Maximum Latency:        217.17 ms
+Average Latency:        46.85 ms
+P95 Latency (95th %):   118.18 ms
+Standard Deviation:     39.68 ms
+
+Breakdown by Pipeline Stage:
+- YOLOv8 Inference:     46.03 ms
+- Debounce & Decision:  0.807 ms
+- GPIO Command Exec:    0.012 ms
+============================================================
