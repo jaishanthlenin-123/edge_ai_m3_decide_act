@@ -157,6 +157,13 @@ async def update_config(cfg: ConfigModel):
     return {"status": "success", "config": await get_config()}
 
 
+@app.post("/api/set_scene")
+async def set_scene_endpoint(scene: str):
+    """Set manual test scene (e.g., tc01_helmet_only, tc02_gloves_only, tc03_both, tc04_neither)."""
+    engine.set_manual_scene(scene)
+    return {"status": "success", "scene": scene}
+
+
 @app.post("/api/snapshot")
 async def capture_snapshot():
     """Capture current annotated frame and persist to disk."""

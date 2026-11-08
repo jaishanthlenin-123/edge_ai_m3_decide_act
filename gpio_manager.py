@@ -52,45 +52,39 @@ class PiGPIOManager:
 
     def update(self, has_helmet: bool, has_gloves: bool) -> Dict[str, Any]:
         """
-        Applies LED activation rules based on detection results:
-        1. Both Helmet AND Gloves -> RED LED ON (Yellow & Green OFF)
-        2. Gloves ONLY            -> YELLOW LED ON (Green & Red OFF)
-        3. Helmet ONLY            -> GREEN LED ON (Yellow & Red OFF)
+        Applies M3 Three-LED activation rules based on detection results:
+        1. Both Helmet AND Gloves -> ALL 3 LEDS ON (Green ON, Yellow ON, Red ON)
+        2. Helmet ONLY            -> GREEN LED ON (Yellow OFF, Red OFF)
+        3. Gloves ONLY            -> YELLOW LED ON (Green OFF, Red OFF)
         4. Neither                -> ALL LEDS OFF
+
+        Truth Table:
+        helmet_led = helmet_detected
+        glove_led  = glove_detected
+        both_led   = helmet_detected and glove_detected
         """
-        if has_helmet and has_gloves:
-            # Rule 3: Both Helmet and Gloves identified -> RED ON
-            self.state_red = True
-            self.state_yellow = False
-            self.state_green = False
-            self.active_condition = "RED"
-        elif has_gloves and not has_helmet:
-            # Rule 1: Gloves ONLY identified -> YELLOW ON
-            self.state_yellow = True
-            self.state_green = False
-            self.state_red = False
-            self.active_condition = "YELLOW"
-        elif has_helmet and not has_gloves:
-            # Rule 2: Helmet ONLY identified -> GREEN ON
-            self.state_green = True
-            self.state_yellow = False
-            self.state_red = False
+        # Critical M3 Decision Logic
+        self.state_green = bool(has_helmet)
+        self.state_yellow = bool(has_gloves)
+        self.state_red = bool(has_helmet and has_gloves)
+
+        if self.state_red:
+            self.active_condition = "ALL_ON"
+        elif self.state_green:
             self.active_condition = "GREEN"
+        elif self.state_yellow:
+            self.active_condition = "YELLOW"
         else:
-            # Neither identified -> ALL OFF
-            self.state_yellow = False
-            self.state_green = False
-            self.state_red = False
             self.active_condition = "OFF"
 
         # Apply to physical hardware if running on Raspberry Pi 5
         if self.is_hardware:
             try:
-                if self.state_yellow: self.led_yellow.on()
-                else: self.led_yellow.off()
-
                 if self.state_green: self.led_green.on()
                 else: self.led_green.off()
+
+                if self.state_yellow: self.led_yellow.on()
+                else: self.led_yellow.off()
 
                 if self.state_red: self.led_red.on()
                 else: self.led_red.off()
@@ -102,33 +96,33 @@ class PiGPIOManager:
     def get_state(self) -> Dict[str, Any]:
         """Returns structured LED status for WebSocket telemetry and live dashboard UI."""
         active_label = "ALL LEDS OFF"
-        if self.active_condition == "RED":
-            active_label = "RED LED ACTIVE (BOTH HELMET & GLOVES)"
-        elif self.active_condition == "YELLOW":
-            active_label = "YELLOW LED ACTIVE (GLOVES ONLY)"
-        elif self.active_condition == "GREEN":
+        if self.state_red:
+            active_label = "ALL 3 LEDS ACTIVE (BOTH HELMET & GLOVES)"
+        elif self.state_green:
             active_label = "GREEN LED ACTIVE (HELMET ONLY)"
+        elif self.state_yellow:
+            active_label = "YELLOW LED ACTIVE (GLOVES ONLY)"
 
         return {
             "yellow": {
                 "active": self.state_yellow,
                 "pin_bcm": PIN_YELLOW_BCM,
                 "pin_physical": 11,
-                "condition": "Gloves Only",
+                "condition": "Gloves Indicator",
                 "color": "#ffd600"
             },
             "green": {
                 "active": self.state_green,
                 "pin_bcm": PIN_GREEN_BCM,
                 "pin_physical": 13,
-                "condition": "Helmet Only",
+                "condition": "Helmet Indicator",
                 "color": "#00e676"
             },
             "red": {
                 "active": self.state_red,
                 "pin_bcm": PIN_RED_BCM,
                 "pin_physical": 15,
-                "condition": "Both Helmet & Gloves",
+                "condition": "Both Indicator",
                 "color": "#ff1744"
             },
             "gnd_pin_physical": PIN_GND_PHYSICAL,

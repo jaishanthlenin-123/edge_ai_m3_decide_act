@@ -148,6 +148,7 @@ class EdgeVisionEngine:
         self.sim_last_switch = time.time()
         self.sim_pan_x = 0
         self.sim_pan_dx = 1
+        self.manual_scene_image = None
         self._load_simulation_samples()
 
         # Camera handle
@@ -233,8 +234,27 @@ class EdgeVisionEngine:
             if rule is not None and rule in ["standard", "strict"]:
                 self.rule_mode = rule
 
+    def set_manual_scene(self, scene_name_or_path: Optional[str] = None):
+        """Set a dedicated scene image for deterministic M3 test validation."""
+        with self.lock:
+            if not scene_name_or_path:
+                self.manual_scene_image = None
+                return
+            p = scene_name_or_path
+            if not os.path.exists(p) and os.path.exists(f"samples/{scene_name_or_path}.jpg"):
+                p = f"samples/{scene_name_or_path}.jpg"
+            if os.path.exists(p):
+                img = cv2.imread(p)
+                if img is not None:
+                    self.manual_scene_image = img
+                    self.source_mode = "simulation"
+                    print(f"[Engine] Manual test scene set: {p}")
+
     def _get_frame(self) -> Optional[np.ndarray]:
         """Fetch next frame from webcam or synthetic simulation stream."""
+        if self.source_mode == "simulation" and self.manual_scene_image is not None:
+            return cv2.resize(self.manual_scene_image, (640, 480))
+
         if self.source_mode == "webcam" and self.camera is not None and self.camera.isOpened():
             success, frame = self.camera.read()
             if success and frame is not None:
