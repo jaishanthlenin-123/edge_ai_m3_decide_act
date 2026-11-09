@@ -83,3 +83,4 @@ The test suite `tests/M3/test_debounce.py` validates all 7 mandatory operating c
 ### Transition Timeline Artifact:
 The simulation timeline has been recorded to:
 `evidence/M3/03_debounce/debounce_verification_timeline.csv`
+

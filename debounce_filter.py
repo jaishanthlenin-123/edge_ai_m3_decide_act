@@ -92,3 +92,4 @@ class ConsecutiveFrameDebounceFilter:
             "transitions_fired": self.transition_count,
             "filtered_glitches": self.filtered_glitches_count
         }
+

@@ -161,3 +161,4 @@ Breakdown by Pipeline Stage:
 
 if __name__ == "__main__":
     run_latency_benchmark(num_events=30)
+

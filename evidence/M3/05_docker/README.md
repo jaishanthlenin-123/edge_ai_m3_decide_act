@@ -28,3 +28,4 @@
 ## 3. Host Environment Note
 
 On the current host machine, Docker Desktop version `29.9.2` is installed with client CLI tools. The Docker daemon pipe requires starting the Docker Desktop GUI service. The container configurations have been structured for zero-dependency portability across Linux, Raspberry Pi OS, and Windows 11.
+

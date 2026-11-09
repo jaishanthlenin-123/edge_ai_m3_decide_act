@@ -83,3 +83,4 @@ The complete event distribution curve is illustrated below:
 | `EVT-030` | `10216.540210` | `10216.570180` | 29.21 | 0.741 | 0.011 | 29.97 |
 
 *Complete raw data is archived in `evidence/M3/06_latency/latency_measurements.csv`.*
+

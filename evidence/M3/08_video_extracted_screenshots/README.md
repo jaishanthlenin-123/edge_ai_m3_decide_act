@@ -76,3 +76,4 @@ The live application screenshots captured under `evidence/M3/07_dashboard_screen
 2. `TC02_gloves_only.png`: Green LED OFF, Yellow LED ON, Red LED OFF.
 3. `TC03_both_detected.png`: Green LED ON, Yellow LED ON, Red LED ON.
 4. `TC04_neither_detected.png`: All 3 LEDs OFF.
+

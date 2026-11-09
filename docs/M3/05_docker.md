@@ -138,3 +138,4 @@ docker run -d \
    docker restart aegis_edge_m3
    docker logs --tail 10 aegis_edge_m3
    ```
+

@@ -120,3 +120,4 @@ In industrial safety systems, actuator behavior under error conditions must be d
    - Releases pins and closes GPIO handles.
 3. **Simulation Fallback:**
    - If running on a non-Pi machine or Docker container lacking `/dev/gpiomem`, the system defaults to virtual simulated mode with complete truth table emulation.
+

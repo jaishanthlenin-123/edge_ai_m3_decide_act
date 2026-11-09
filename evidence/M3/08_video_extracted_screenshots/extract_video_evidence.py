@@ -45,3 +45,4 @@ if __name__ == "__main__":
     parser.add_argument("--output", default="evidence/M3/08_video_extracted_screenshots", help="Output directory")
     args = parser.parse_args()
     extract_key_frames(args.video, args.output)
+

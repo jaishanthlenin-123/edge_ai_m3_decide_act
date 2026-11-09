@@ -139,6 +139,7 @@ The model checkpoint `best.pt` was trained on a dataset exported from Roboflow U
 | **Task 4** | Actuator Fires | Three-LED hardware verification across TC01–TC04 truth table. | [docs/M3/04_actuator.md](docs/M3/04_actuator.md) | `evidence/M3/04_actuator/` |
 | **Task 5** | Docker Deployment | Multi-stage Docker containerization, healthchecks, and simulation mode. | [docs/M3/05_docker.md](docs/M3/05_docker.md) | `evidence/M3/05_docker/` |
 | **Task 6** | End-to-End Latency | Microsecond-precision benchmarking of capture-to-actuator latency. | [docs/M3/06_end_to_end_latency.md](docs/M3/06_end_to_end_latency.md) | `evidence/M3/06_latency/` |
+| **Empirical Evidence** | Physical Photos & Video Proof | Physical Pi 5 hardware, 3-LED actuator video, breadboard wiring, and keyframes. | [docs/M3/09_photos_and_video_evidence.md](docs/M3/09_photos_and_video_evidence.md) | `evidence/M3/09_photos_and_video_evidence/` |
 
 ---
 
@@ -200,7 +201,34 @@ The following genuine screenshots were captured directly from the running web ap
 
 ---
 
-## 9. Latency Benchmark Summary
+## 9. Physical Hardware, Actuator Circuit & Video Demonstration Evidence
+
+Comprehensive physical evidence and demonstration footage have been organized under [`evidence/M3/09_photos_and_video_evidence/`](evidence/M3/09_photos_and_video_evidence/) and detailed in [docs/M3/09_photos_and_video_evidence.md](docs/M3/09_photos_and_video_evidence.md):
+
+### 9.1 Physical Actuator Video Demonstration (3 LEDs)
+- **Video:** [`3_led_blinking_actuator_video.mp4`](evidence/M3/09_photos_and_video_evidence/02_actuator_circuit/3_led_blinking_actuator_video.mp4) (45.3s, 30 FPS)
+- **Wiring & Breadboard Photo:** [`circuit_connection_breadboard.jpeg`](evidence/M3/09_photos_and_video_evidence/02_actuator_circuit/circuit_connection_breadboard.jpeg)
+- **Empirical Video Keyframes:**
+  - `frame_actuator_01_idle_all_off.png` ($t = 0.60\,\text{s}$): Neither detected $\to$ All 3 LEDs OFF (`[0, 0, 0]`).
+  - `frame_actuator_02_helmet_only_green_on.png` ($t = 3.00\,\text{s}$): Helmet only $\to$ **Green LED ON**, Yellow & Red OFF (`[1, 0, 0]`).
+  - `frame_actuator_03_gloves_only_yellow_on.png` ($t = 18.17\,\text{s}$): Gloves only $\to$ **Yellow LED ON**, Green & Red OFF (`[0, 1, 0]`).
+  - `frame_actuator_04_both_detected_all_three_on.png` ($t = 24.50\,\text{s}$): Both detected $\to$ **ALL THREE LEDs (Green, Yellow, Red) ON SIMULTANEOUSLY** (`[1, 1, 1]`).
+  - `frame_actuator_05_both_detected_sustained.png` ($t = 35.00\,\text{s}$): Both detected (Retest) $\to$ All 3 LEDs ON.
+  - `frame_actuator_06_return_idle_all_off.png` ($t = 44.67\,\text{s}$): Return to idle $\to$ All 3 LEDs OFF.
+
+### 9.2 Raspberry Pi 5 & Live Camera Hardware Evidence
+- **Raspberry Pi 5 Board & Workbench:** [`raspberry_pi_5_hardware.jpeg`](evidence/M3/09_photos_and_video_evidence/01_hardware_setup/raspberry_pi_5_hardware.jpeg)
+- **Hardware Walkthrough Video:** [`initial_setup_video.mp4`](evidence/M3/09_photos_and_video_evidence/01_hardware_setup/initial_setup_video.mp4)
+- **Pi Desktop Live Camera Inference:** [`rpi_camera_live_capture.jpeg`](evidence/M3/09_photos_and_video_evidence/03_live_detections/rpi_camera_live_capture.jpeg) (Showing `snapshot.py`, 10.9 FPS, 81.85 ms latency)
+- **Physical PPE Scenarios:** [`scenario_helmet_only.jpeg`](evidence/M3/09_photos_and_video_evidence/03_live_detections/scenario_helmet_only.jpeg), [`scenario_both_helmet_gloves_pose1.jpeg`](evidence/M3/09_photos_and_video_evidence/03_live_detections/scenario_both_helmet_gloves_pose1.jpeg), [`scenario_both_helmet_gloves_pose2.jpeg`](evidence/M3/09_photos_and_video_evidence/03_live_detections/scenario_both_helmet_gloves_pose2.jpeg)
+
+### 9.3 Web Dashboard Stream Recording & Dataset Origin
+- **Dashboard Stream Recording:** [`dashboard_screen_record.mp4`](evidence/M3/09_photos_and_video_evidence/04_dashboard_operation/dashboard_screen_record.mp4) (Showing real-time stream at 20.4 FPS, 35.4 ms latency)
+- **Kaggle PPE Dataset Origin:** [`kaggle_ppe_dataset_source.jpeg`](evidence/M3/09_photos_and_video_evidence/05_datasets_and_training/kaggle_ppe_dataset_source.jpeg) (Kaggle `waquarahmed/ppe-dataset` repository and manifest)
+
+---
+
+## 10. Latency Benchmark Summary
 
 End-to-end benchmark profiled across 30 consecutive inspection events using high-resolution monotonic timers:
 - **Average Latency:** $46.85\,\text{ms}$
@@ -215,7 +243,7 @@ End-to-end benchmark profiled across 30 consecutive inspection events using high
 
 ---
 
-## 10. Repository Migration & Authorship
+## 11. Repository Migration & Authorship
 
 - **Original Project:** [mithra4325/edge_computing](https://github.com/mithra4325/edge_computing)
 - **Target Repository:** [jaishanthlenin-123/edge_ai_m3_decide_act](https://github.com/jaishanthlenin-123/edge_ai_m3_decide_act)
@@ -226,7 +254,7 @@ End-to-end benchmark profiled across 30 consecutive inspection events using high
 
 ---
 
-## 11. Limitations & Future Roadmap
+## 12. Limitations & Future Roadmap
 
 1. **Hardware Acceleration:** Compile `best.pt` to NCNN / Hailo-8 NPU format to achieve $60+\,\text{FPS}$ at $<15\,\text{ms}$ on the Raspberry Pi 5.
 2. **Audio Stack Lights:** Interface an industrial piezo buzzer on `GPIO 24` synchronized with the red violation LED.

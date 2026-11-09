@@ -85,3 +85,4 @@ The lower section of the dashboard features a rolling circular buffer of the las
 - Records exact timestamp, compliance verdict (PASS / FAIL), detection breakdown, and latency.
 - High-resolution snapshot capture button saves annotated frames directly to the edge filesystem (`snapshots/`).
 - Includes a **CSV Audit Export** button to download compliance records for plant safety audits.
+
