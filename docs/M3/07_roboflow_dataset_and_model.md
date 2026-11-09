@@ -163,9 +163,9 @@ Navigate to `http://localhost:8000` to inspect live video feeds, dynamic sliders
 
 ## 7. Empirical Dataset Evidence & Repository Links
 
-Authentic photographic evidence of the dataset origin has been cataloged under [`evidence/M3/09_photos_and_video_evidence/05_datasets_and_training/`](file:///e:/New%20folder%20(6)/evidence/M3/09_photos_and_video_evidence/05_datasets_and_training/):
+Authentic photographic evidence of the dataset origin has been cataloged under [`evidence/M3/07_roboflow_dataset_and_model/`](file:///e:/New%20folder%20(6)/evidence/M3/07_roboflow_dataset_and_model/):
 
-- **Kaggle Dataset Portal Evidence:** [`kaggle_ppe_dataset_source.jpeg`](file:///e:/New%20folder%20(6)/evidence/M3/09_photos_and_video_evidence/05_datasets_and_training/kaggle_ppe_dataset_source.jpeg)
+- **Kaggle Dataset Portal Evidence:** [`screenshots/kaggle_ppe_dataset_source.jpeg`](file:///e:/New%20folder%20(6)/evidence/M3/07_roboflow_dataset_and_model/screenshots/kaggle_ppe_dataset_source.jpeg)
   - Displays the Kaggle PPE Dataset repository (`waquarahmed/ppe-dataset`), showing 23,600+ industrial PPE images, file manifest (`01-15-1-1-1-1-30.jpg`), and data card.
   - The dataset served as the foundational source exported to Roboflow project `yolo-detection-helmet-gloves-2` for 3-class normalized bounding box annotations (`0: gloves`, `1: head`, `2: helmet`).
 - **Direct Kaggle URL:** [https://www.kaggle.com/datasets/waquarahmed/ppe-dataset](https://www.kaggle.com/datasets/waquarahmed/ppe-dataset)

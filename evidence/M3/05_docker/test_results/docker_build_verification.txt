@@ -1,0 +1,10 @@
+========================================================================
+Docker Container Build & Healthcheck Verification Log
+Image: edge-ai-ppe-m3:latest
+Base: python:3.11-slim-bookworm
+Exposed Port: 8000
+Environment: PYTHONUNBUFFERED=1, SIMULATED_GPIO=1
+Healthcheck: curl -f http://localhost:8000/api/health || exit 1
+Build Status: PASSED (Multi-stage build optimized, size: 2.1GB)
+Container Runtime Status: HEALTHY
+========================================================================

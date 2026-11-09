@@ -78,27 +78,27 @@ In compliance with industrial functional safety standards:
 In addition to automated software simulation, the physical actuator circuit was constructed on a breadboard and evaluated live with the trained model and camera on Raspberry Pi 5 hardware.
 
 ### 5.1 Physical Circuit & Video Demonstration
-- **Breadboard Circuit Photo:** [`circuit_connection_breadboard.jpeg`](file:///e:/New%20folder%20(6)/evidence/M3/09_photos_and_video_evidence/02_actuator_circuit/circuit_connection_breadboard.jpeg)
-- **Live Actuator Demonstration Video:** [`3_led_blinking_actuator_video.mp4`](file:///e:/New%20folder%20(6)/evidence/M3/09_photos_and_video_evidence/02_actuator_circuit/3_led_blinking_actuator_video.mp4) (45.3s, 30 FPS)
-- **Comprehensive Actuator Evidence Documentation:** [`evidence/M3/09_photos_and_video_evidence/02_actuator_circuit/README.md`](file:///e:/New%20folder%20(6)/evidence/M3/09_photos_and_video_evidence/02_actuator_circuit/README.md)
+- **Breadboard Circuit Photo:** [`photos/circuit_connection_breadboard.jpeg`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/photos/circuit_connection_breadboard.jpeg)
+- **Live Actuator Demonstration Video:** [`videos/3_led_blinking_actuator_video.mp4`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/videos/3_led_blinking_actuator_video.mp4) (45.3s, 30 FPS)
+- **Subtopic Evidence Documentation:** [`evidence/M3/04_actuator/README.md`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/README.md)
 
-### 5.2 Extracted Physical Video Keyframes (`frames/`)
+### 5.2 Extracted Physical Video Keyframes (`videos/frames/`)
 The demonstration video verifies all four states of the truth table on physical LEDs:
-1. **Idle State (Neither Detected):** [`frame_actuator_01_idle_all_off.png`](file:///e:/New%20folder%20(6)/evidence/M3/09_photos_and_video_evidence/02_actuator_circuit/frames/frame_actuator_01_idle_all_off.png) ($t = 0.60\,\text{s}$) — All 3 LEDs OFF.
-2. **Helmet Only Detected:** [`frame_actuator_02_helmet_only_green_on.png`](file:///e:/New%20folder%20(6)/evidence/M3/09_photos_and_video_evidence/02_actuator_circuit/frames/frame_actuator_02_helmet_only_green_on.png) ($t = 3.00\,\text{s}$) — Green LED (`GPIO 27`) ON, Yellow & Red OFF.
-3. **Gloves Only Detected:** [`frame_actuator_03_gloves_only_yellow_on.png`](file:///e:/New%20folder%20(6)/evidence/M3/09_photos_and_video_evidence/02_actuator_circuit/frames/frame_actuator_03_gloves_only_yellow_on.png) ($t = 18.17\,\text{s}$) — Yellow LED (`GPIO 17`) ON, Green & Red OFF.
-4. **Both Detected (Crucial M3 Rule):** [`frame_actuator_04_both_detected_all_three_on.png`](file:///e:/New%20folder%20(6)/evidence/M3/09_photos_and_video_evidence/02_actuator_circuit/frames/frame_actuator_04_both_detected_all_three_on.png) ($t = 24.50\,\text{s}$) — **ALL THREE LEDs (Green, Yellow, Red) ON SIMULTANEOUSLY**.
-5. **Both Detected Retest:** [`frame_actuator_05_both_detected_sustained.png`](file:///e:/New%20folder%20(6)/evidence/M3/09_photos_and_video_evidence/02_actuator_circuit/frames/frame_actuator_05_both_detected_sustained.png) ($t = 35.00\,\text{s}$) — Sustained simultaneous illumination.
-6. **Return to Idle:** [`frame_actuator_06_return_idle_all_off.png`](file:///e:/New%20folder%20(6)/evidence/M3/09_photos_and_video_evidence/02_actuator_circuit/frames/frame_actuator_06_return_idle_all_off.png) ($t = 44.67\,\text{s}$) — All 3 LEDs de-energized.
+1. **Idle State (Neither Detected):** [`frame_actuator_01_idle_all_off.png`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/videos/frames/frame_actuator_01_idle_all_off.png) ($t = 0.60\,\text{s}$) — All 3 LEDs OFF.
+2. **Helmet Only Detected:** [`frame_actuator_02_helmet_only_green_on.png`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/videos/frames/frame_actuator_02_helmet_only_green_on.png) ($t = 3.00\,\text{s}$) — Green LED (`GPIO 27`) ON, Yellow & Red OFF.
+3. **Gloves Only Detected:** [`frame_actuator_03_gloves_only_yellow_on.png`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/videos/frames/frame_actuator_03_gloves_only_yellow_on.png) ($t = 18.17\,\text{s}$) — Yellow LED (`GPIO 17`) ON, Green & Red OFF.
+4. **Both Detected (Crucial M3 Rule):** [`frame_actuator_04_both_detected_all_three_on.png`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/videos/frames/frame_actuator_04_both_detected_all_three_on.png) ($t = 24.50\,\text{s}$) — **ALL THREE LEDs (Green, Yellow, Red) ON SIMULTANEOUSLY**.
+5. **Both Detected Retest:** [`frame_actuator_05_both_detected_sustained.png`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/videos/frames/frame_actuator_05_both_detected_sustained.png) ($t = 35.00\,\text{s}$) — Sustained simultaneous illumination.
+6. **Return to Idle:** [`frame_actuator_06_return_idle_all_off.png`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/videos/frames/frame_actuator_06_return_idle_all_off.png) ($t = 44.67\,\text{s}$) — All 3 LEDs de-energized.
 
 ---
 
 ## 6. Artifact Links
 
 The simulated test suite outputs and logs are archived in:
-- `evidence/M3/04_actuator/TC01_helmet_only.png`
-- `evidence/M3/04_actuator/TC02_gloves_only.png`
-- `evidence/M3/04_actuator/TC03_both_detected.png`
-- `evidence/M3/04_actuator/TC04_neither_detected.png`
-- `evidence/M3/04_actuator/actuator_test_output.txt`
+- `evidence/M3/04_actuator/screenshots/TC01_helmet_only.png`
+- `evidence/M3/04_actuator/screenshots/TC02_gloves_only.png`
+- `evidence/M3/04_actuator/screenshots/TC03_both_detected.png`
+- `evidence/M3/04_actuator/screenshots/TC04_neither_detected.png`
+- `evidence/M3/04_actuator/test_results/actuator_test_output.txt`
 

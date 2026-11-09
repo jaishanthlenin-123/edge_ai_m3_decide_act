@@ -129,17 +129,21 @@ The model checkpoint `best.pt` was trained on a dataset exported from Roboflow U
 
 ---
 
-## 6. Milestone 3 (M3) Tasks & Technical Deliverables
+## 6. Milestone 3 (M3) Nine-Subtopic Evidence Structure
 
-| Task | Title | Description | Documentation | Evidence Folder |
+The evidence in this repository follows the modular, folder-based subtopic architecture modeled after M2:
+
+| Subtopic | Title | Description | Technical Documentation | Self-Contained Evidence Subtopic |
 |---|---|---|---|---|
-| **Task 1** | Decision Rule Sheet | Complete rule sheet, confidence filtering, fail-safe state matrix. | [docs/M3/01_decision_rule_sheet.md](docs/M3/01_decision_rule_sheet.md) | `evidence/M3/01_decision_rule_sheet/` |
-| **Task 2** | Two-Stream Pipeline | Concurrent asynchronous dual-feed processing & logical union arbitration. | [docs/M3/02_two_stream_pipeline.md](docs/M3/02_two_stream_pipeline.md) | `evidence/M3/02_two_stream_pipeline/` |
-| **Task 3** | Debounce Filter | $N$-consecutive-frame state machine eliminating sensor noise & chattering. | [docs/M3/03_debounce.md](docs/M3/03_debounce.md) | `evidence/M3/03_debounce/` |
-| **Task 4** | Actuator Fires | Three-LED hardware verification across TC01–TC04 truth table. | [docs/M3/04_actuator.md](docs/M3/04_actuator.md) | `evidence/M3/04_actuator/` |
-| **Task 5** | Docker Deployment | Multi-stage Docker containerization, healthchecks, and simulation mode. | [docs/M3/05_docker.md](docs/M3/05_docker.md) | `evidence/M3/05_docker/` |
-| **Task 6** | End-to-End Latency | Microsecond-precision benchmarking of capture-to-actuator latency. | [docs/M3/06_end_to_end_latency.md](docs/M3/06_end_to_end_latency.md) | `evidence/M3/06_latency/` |
-| **Empirical Evidence** | Physical Photos & Video Proof | Physical Pi 5 hardware, 3-LED actuator video, breadboard wiring, and keyframes. | [docs/M3/09_photos_and_video_evidence.md](docs/M3/09_photos_and_video_evidence.md) | `evidence/M3/09_photos_and_video_evidence/` |
+| **01** | **Decision Rule Sheet** | 3-LED decision rule sheet, confidence filtering, ground truth scenarios. | [docs/M3/01_decision_rule_sheet.md](docs/M3/01_decision_rule_sheet.md) | [`evidence/M3/01_decision_rule_sheet/`](evidence/M3/01_decision_rule_sheet/) |
+| **02** | **Two-Stream Pipeline** | Concurrent asynchronous dual-feed processing & logical union arbitration. | [docs/M3/02_two_stream_pipeline.md](docs/M3/02_two_stream_pipeline.md) | [`evidence/M3/02_two_stream_pipeline/`](evidence/M3/02_two_stream_pipeline/) |
+| **03** | **Debounce Filter** | $N$-consecutive-frame state machine eliminating sensor noise & chattering. | [docs/M3/03_debounce.md](docs/M3/03_debounce.md) | [`evidence/M3/03_debounce/`](evidence/M3/03_debounce/) |
+| **04** | **Actuator Control** | Three-LED hardware verification across TC01–TC04 truth table. | [docs/M3/04_actuator.md](docs/M3/04_actuator.md) | [`evidence/M3/04_actuator/`](evidence/M3/04_actuator/) |
+| **05** | **Docker Deployment** | Multi-stage Docker containerization, healthchecks, and simulation mode. | [docs/M3/05_docker.md](docs/M3/05_docker.md) | [`evidence/M3/05_docker/`](evidence/M3/05_docker/) |
+| **06** | **End-to-End Latency** | Microsecond-precision benchmarking of capture-to-actuator latency. | [docs/M3/06_end_to_end_latency.md](docs/M3/06_end_to_end_latency.md) | [`evidence/M3/06_end_to_end_latency/`](evidence/M3/06_end_to_end_latency/) |
+| **07** | **Roboflow Dataset & Model** | Dataset sourcing, Roboflow annotations, and YOLOv8 weights metadata. | [docs/M3/07_roboflow_dataset_and_model.md](docs/M3/07_roboflow_dataset_and_model.md) | [`evidence/M3/07_roboflow_dataset_and_model/`](evidence/M3/07_roboflow_dataset_and_model/) |
+| **08** | **Dashboard Documentation** | Web dashboard, real-time stream, dynamic controls, and telemetry. | [docs/M3/08_dashboard_documentation.md](docs/M3/08_dashboard_documentation.md) | [`evidence/M3/08_dashboard_documentation/`](evidence/M3/08_dashboard_documentation/) |
+| **09** | **Raspberry Pi Hardware & Camera**| Physical Pi 5 SBC, Active Cooler, camera mounting, and on-device execution. | [docs/M3/09_raspberry_pi_hardware_and_camera.md](docs/M3/09_raspberry_pi_hardware_and_camera.md) | [`evidence/M3/09_raspberry_pi_hardware_and_camera/`](evidence/M3/09_raspberry_pi_hardware_and_camera/) |
 
 ---
 
@@ -190,25 +194,26 @@ docker run -d -p 8000:8000 --device /dev/video0:/dev/video0 --device /dev/gpiome
 
 ## 8. Verified Dashboard Screenshots (Four Mandatory Scenarios)
 
-The following genuine screenshots were captured directly from the running web application:
+The following genuine screenshots were captured directly from the running web application under [`evidence/M3/08_dashboard_documentation/screenshots/`](evidence/M3/08_dashboard_documentation/screenshots/):
 
 | Scenario | Screenshot Evidence | Actuator Output | Status |
 |---|---|---|---|
-| **Screenshot 1: Helmet Only** | ![TC01](evidence/M3/07_dashboard_screenshots/TC01_helmet_only.png) | **LED 1 ON (Green)**, LED 2 OFF, LED 3 OFF | **VERIFIED** |
-| **Screenshot 2: Gloves Only** | ![TC02](evidence/M3/07_dashboard_screenshots/TC02_gloves_only.png) | LED 1 OFF, **LED 2 ON (Yellow)**, LED 3 OFF | **VERIFIED** |
-| **Screenshot 3: Both Detected** | ![TC03](evidence/M3/07_dashboard_screenshots/TC03_both_detected.png) | **LED 1 ON (Green)**, **LED 2 ON (Yellow)**, **LED 3 ON (Red)** | **VERIFIED** |
-| **Screenshot 4: Neither Detected** | ![TC04](evidence/M3/07_dashboard_screenshots/TC04_neither_detected.png) | LED 1 OFF, LED 2 OFF, LED 3 OFF | **VERIFIED** |
+| **Screenshot 1: Helmet Only** | ![TC01](evidence/M3/08_dashboard_documentation/screenshots/TC01_helmet_only.png) | **LED 1 ON (Green)**, LED 2 OFF, LED 3 OFF | **VERIFIED** |
+| **Screenshot 2: Gloves Only** | ![TC02](evidence/M3/08_dashboard_documentation/screenshots/TC02_gloves_only.png) | LED 1 OFF, **LED 2 ON (Yellow)**, LED 3 OFF | **VERIFIED** |
+| **Screenshot 3: Both Detected** | ![TC03](evidence/M3/08_dashboard_documentation/screenshots/TC03_both_detected.png) | **LED 1 ON (Green)**, **LED 2 ON (Yellow)**, **LED 3 ON (Red)** | **VERIFIED** |
+| **Screenshot 4: Neither Detected** | ![TC04](evidence/M3/08_dashboard_documentation/screenshots/TC04_neither_detected.png) | LED 1 OFF, LED 2 OFF, LED 3 OFF | **VERIFIED** |
 
 ---
 
 ## 9. Physical Hardware, Actuator Circuit & Video Demonstration Evidence
 
-Comprehensive physical evidence and demonstration footage have been organized under [`evidence/M3/09_photos_and_video_evidence/`](evidence/M3/09_photos_and_video_evidence/) and detailed in [docs/M3/09_photos_and_video_evidence.md](docs/M3/09_photos_and_video_evidence.md):
+Comprehensive physical evidence and demonstration footage are archived in their dedicated subtopics:
 
-### 9.1 Physical Actuator Video Demonstration (3 LEDs)
-- **Video:** [`3_led_blinking_actuator_video.mp4`](evidence/M3/09_photos_and_video_evidence/02_actuator_circuit/3_led_blinking_actuator_video.mp4) (45.3s, 30 FPS)
-- **Wiring & Breadboard Photo:** [`circuit_connection_breadboard.jpeg`](evidence/M3/09_photos_and_video_evidence/02_actuator_circuit/circuit_connection_breadboard.jpeg)
-- **Empirical Video Keyframes:**
+### 9.1 Physical Actuator Video Demonstration (3 LEDs) – Subtopic 04
+- **Subtopic Folder:** [`evidence/M3/04_actuator/`](evidence/M3/04_actuator/)
+- **Demonstration Video:** [`3_led_blinking_actuator_video.mp4`](evidence/M3/04_actuator/videos/3_led_blinking_actuator_video.mp4) (45.3s, 30 FPS)
+- **Wiring & Breadboard Photo:** [`circuit_connection_breadboard.jpeg`](evidence/M3/04_actuator/photos/circuit_connection_breadboard.jpeg)
+- **Empirical Video Keyframes (`04_actuator/videos/frames/`):**
   - `frame_actuator_01_idle_all_off.png` ($t = 0.60\,\text{s}$): Neither detected $\to$ All 3 LEDs OFF (`[0, 0, 0]`).
   - `frame_actuator_02_helmet_only_green_on.png` ($t = 3.00\,\text{s}$): Helmet only $\to$ **Green LED ON**, Yellow & Red OFF (`[1, 0, 0]`).
   - `frame_actuator_03_gloves_only_yellow_on.png` ($t = 18.17\,\text{s}$): Gloves only $\to$ **Yellow LED ON**, Green & Red OFF (`[0, 1, 0]`).
@@ -216,21 +221,22 @@ Comprehensive physical evidence and demonstration footage have been organized un
   - `frame_actuator_05_both_detected_sustained.png` ($t = 35.00\,\text{s}$): Both detected (Retest) $\to$ All 3 LEDs ON.
   - `frame_actuator_06_return_idle_all_off.png` ($t = 44.67\,\text{s}$): Return to idle $\to$ All 3 LEDs OFF.
 
-### 9.2 Raspberry Pi 5 & Live Camera Hardware Evidence
-- **Raspberry Pi 5 Board & Workbench:** [`raspberry_pi_5_hardware.jpeg`](evidence/M3/09_photos_and_video_evidence/01_hardware_setup/raspberry_pi_5_hardware.jpeg)
-- **Hardware Walkthrough Video:** [`initial_setup_video.mp4`](evidence/M3/09_photos_and_video_evidence/01_hardware_setup/initial_setup_video.mp4)
-- **Pi Desktop Live Camera Inference:** [`rpi_camera_live_capture.jpeg`](evidence/M3/09_photos_and_video_evidence/03_live_detections/rpi_camera_live_capture.jpeg) (Showing `snapshot.py`, 10.9 FPS, 81.85 ms latency)
-- **Physical PPE Scenarios:** [`scenario_helmet_only.jpeg`](evidence/M3/09_photos_and_video_evidence/03_live_detections/scenario_helmet_only.jpeg), [`scenario_both_helmet_gloves_pose1.jpeg`](evidence/M3/09_photos_and_video_evidence/03_live_detections/scenario_both_helmet_gloves_pose1.jpeg), [`scenario_both_helmet_gloves_pose2.jpeg`](evidence/M3/09_photos_and_video_evidence/03_live_detections/scenario_both_helmet_gloves_pose2.jpeg)
+### 9.2 Raspberry Pi 5 & Live Camera Hardware Evidence – Subtopic 09
+- **Subtopic Folder:** [`evidence/M3/09_raspberry_pi_hardware_and_camera/`](evidence/M3/09_raspberry_pi_hardware_and_camera/)
+- **Raspberry Pi 5 Board & Workbench:** [`raspberry_pi_5_hardware.jpeg`](evidence/M3/09_raspberry_pi_hardware_and_camera/photos/raspberry_pi_5_hardware.jpeg)
+- **Hardware Walkthrough Video:** [`initial_setup_video.mp4`](evidence/M3/09_raspberry_pi_hardware_and_camera/videos/initial_setup_video.mp4)
+- **Pi Desktop Live Camera Inference:** [`rpi_camera_live_capture.jpeg`](evidence/M3/09_raspberry_pi_hardware_and_camera/screenshots/rpi_camera_live_capture.jpeg) (Showing `snapshot.py`, 10.9 FPS, 81.85 ms latency)
+- **Physical PPE Ground Truth Scenarios (Subtopic 01):** [`evidence/M3/01_decision_rule_sheet/screenshots/`](evidence/M3/01_decision_rule_sheet/screenshots/)
 
-### 9.3 Web Dashboard Stream Recording & Dataset Origin
-- **Dashboard Stream Recording:** [`dashboard_screen_record.mp4`](evidence/M3/09_photos_and_video_evidence/04_dashboard_operation/dashboard_screen_record.mp4) (Showing real-time stream at 20.4 FPS, 35.4 ms latency)
-- **Kaggle PPE Dataset Origin:** [`kaggle_ppe_dataset_source.jpeg`](evidence/M3/09_photos_and_video_evidence/05_datasets_and_training/kaggle_ppe_dataset_source.jpeg) (Kaggle `waquarahmed/ppe-dataset` repository and manifest)
+### 9.3 Web Dashboard Stream Recording & Dataset Origin – Subtopics 07 & 08
+- **Dashboard Stream Recording:** [`dashboard_screen_record.mp4`](evidence/M3/08_dashboard_documentation/screen_recordings/dashboard_screen_record.mp4) (Showing real-time stream at 20.4 FPS, 35.4 ms latency)
+- **Kaggle PPE Dataset Origin:** [`kaggle_ppe_dataset_source.jpeg`](evidence/M3/07_roboflow_dataset_and_model/screenshots/kaggle_ppe_dataset_source.jpeg) (Kaggle `waquarahmed/ppe-dataset` repository and manifest)
 
 ---
 
 ## 10. Latency Benchmark Summary
 
-End-to-end benchmark profiled across 30 consecutive inspection events using high-resolution monotonic timers:
+End-to-end benchmark profiled across 30 consecutive inspection events using high-resolution monotonic timers under [`evidence/M3/06_end_to_end_latency/`](evidence/M3/06_end_to_end_latency/):
 - **Average Latency:** $46.85\,\text{ms}$
 - **Minimum Latency:** $25.58\,\text{ms}$
 - **Maximum Latency:** $217.17\,\text{ms}$ *(Initial cold start)*
@@ -239,7 +245,8 @@ End-to-end benchmark profiled across 30 consecutive inspection events using high
   - YOLOv8 Inference: $46.03\,\text{ms}$ ($98.2\%$)
   - Debounce & Decision State Machine: $0.807\,\text{ms}$ ($1.7\%$)
   - GPIO Pin Actuation: $0.012\,\text{ms}$ ($0.1\%$)
-- Full dataset: [evidence/M3/06_latency/latency_measurements.csv](evidence/M3/06_latency/latency_measurements.csv)
+- Full dataset: [evidence/M3/06_end_to_end_latency/benchmark_results/latency_measurements.csv](evidence/M3/06_end_to_end_latency/benchmark_results/latency_measurements.csv)
+- Distribution Chart: [evidence/M3/06_end_to_end_latency/charts/latency_distribution_chart.png](evidence/M3/06_end_to_end_latency/charts/latency_distribution_chart.png)
 
 ---
 

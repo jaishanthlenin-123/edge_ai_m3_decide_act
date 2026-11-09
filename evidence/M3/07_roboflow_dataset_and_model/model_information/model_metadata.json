@@ -1,0 +1,27 @@
+{
+  "model_name": "YOLOv8n-PPE-Helmet-Gloves",
+  "weights_file": "best.pt",
+  "classes": {
+    "0": "gloves",
+    "1": "head",
+    "2": "helmet"
+  },
+  "framework": "Ultralytics YOLOv8 (v8.4.202)",
+  "training_dataset": {
+    "roboflow_project": "yolo-detection-helmet-gloves",
+    "roboflow_version": 2,
+    "source_repository": "kaggle.com/datasets/waquarahmed/ppe-dataset",
+    "total_images": 23600
+  },
+  "training_metrics": {
+    "epochs": 100,
+    "precision": 0.8656,
+    "recall": 0.7527,
+    "mAP50": 0.7904,
+    "mAP50_95": 0.5256
+  },
+  "inference_resolution": [
+    320,
+    320
+  ]
+}
