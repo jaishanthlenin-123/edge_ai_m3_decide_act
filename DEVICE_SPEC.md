@@ -43,10 +43,26 @@ The system controls 3 physical indicator LEDs based on real-time PPE detection r
 
 | Indicator LED | Detection Trigger Condition | Raspberry Pi 5 Header Pin | BCM GPIO | Current Limiting Resistor | Ground Pin |
 |---|---|---|---|---|---|
-| **YELLOW LED** | **Gloves ONLY Identified** (no helmet) | **Physical Pin 11** | `GPIO 17` | 220 &Omega; (1/4W) | Physical Pin 14 (GND) |
 | **GREEN LED**  | **Helmet ONLY Identified** (no gloves) | **Physical Pin 13** | `GPIO 27` | 220 &Omega; (1/4W) | Physical Pin 14 (GND) |
-| **RED LED**    | **Both Helmet &amp; Gloves Identified** | **Physical Pin 15** | `GPIO 22` | 220 &Omega; (1/4W) | Physical Pin 14 (GND) |
+| **YELLOW LED** | **Gloves ONLY Identified** (no helmet) | **Physical Pin 11** | `GPIO 17` | 220 &Omega; (1/4W) | Physical Pin 14 (GND) |
+| **RED LED**    | **Both Helmet &amp; Gloves Identified** (Blinks at 0.5s cadence; Green & Yellow OFF) | **Physical Pin 15** | `GPIO 22` | 220 &Omega; (1/4W) | Physical Pin 14 (GND) |
 | **ALL OFF**    | Neither identified                     | None (All Low)    | -        | -                 | -                     |
+
+### Authoritative Three-LED Decision Truth Table:
+
+| Detection Condition | Green LED (`GPIO 27`) | Yellow LED (`GPIO 17`) | Red LED (`GPIO 22`) | System State |
+|---|---|---|---|---|
+| **Helmet only** | **ON** | OFF | OFF | `GREEN` |
+| **Gloves only** | OFF | **ON** | OFF | `YELLOW` |
+| **Both helmet AND gloves** | OFF | OFF | **BLINKING** (0.5s on / 0.5s off) | `RED_BLINKING` |
+| **Neither detected** | OFF | OFF | OFF | `OFF` |
+
+> [!IMPORTANT]
+> - Green illuminates **only** when helmet is detected without gloves.
+> - Yellow illuminates **only** when gloves are detected without helmet.
+> - Red blinks **only** when both helmet and gloves are detected simultaneously.
+> - When Red is blinking, Green and Yellow **must remain OFF**.
+> - Red is strictly the Combined Indicator (`Both Detected`), never a general warning or fault indicator.
 
 ### Hardware Wiring Diagram & Circuit Setup:
 

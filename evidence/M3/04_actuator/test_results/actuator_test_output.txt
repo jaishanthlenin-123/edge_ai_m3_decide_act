@@ -1,37 +1,34 @@
-﻿python : test_pin_assignments (__main__.TestActuatorSubsystem.test_pin_assignments)
-At line:1 char:122
-+ ... Encoding } catch {}; python tests/M3/test_actuator.py -v 2>&1 | Tee-O ...
-+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (test_pin_assign...in_assignments):String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 
-[GPIO] Physical GPIO not available (No module named 'gpiozero'). Running in Virtual/Simulated Mode for live dashboard.
-[GPIO] Physical GPIO not available (No module named 'gpiozero'). Running in Virtual/Simulated Mode for live dashboard.
-[GPIO] Pins reset and released.
-[GPIO] Physical GPIO not available (No module named 'gpiozero'). Running in Virtual/Simulated Mode for live dashboard.
-[GPIO] Pins reset and released.
-[GPIO] Pins reset and released.
-[GPIO] Physical GPIO not available (No module named 'gpiozero'). Running in Virtual/Simulated Mode for live dashboard.
-[GPIO] Pins reset and released.
-[GPIO] Physical GPIO not available (No module named 'gpiozero'). Running in Virtual/Simulated Mode for live dashboard.
-[GPIO] Pins reset and released.
-[GPIO] Physical GPIO not available (No module named 'gpiozero'). Running in Virtual/Simulated Mode for live dashboard.
-[GPIO] Pins reset and released.
-[GPIO] Physical GPIO not available (No module named 'gpiozero'). Running in Virtual/Simulated Mode for live dashboard.
-[GPIO] Pins reset and released.
+test_pin_assignments (test_actuator.TestActuatorSubsystem.test_pin_assignments)
 Verify strict hardware GPIO pin allocations on Raspberry Pi 5 RP1. ... ok
-test_safe_state_recovery (__main__.TestActuatorSubsystem.test_safe_state_recovery)
-Verify actuators immediately de-energize to Safe State (all LOW) on fault or shutdown. ... ok
-test_tc01_helmet_only (__main__.TestActuatorSubsystem.test_tc01_helmet_only)
-TC01: Helmet=Yes, Gloves=No -> LED 1 ON, LED 2 OFF, LED 3 OFF ... ok
-test_tc02_gloves_only (__main__.TestActuatorSubsystem.test_tc02_gloves_only)
-TC02: Helmet=No, Gloves=Yes -> LED 1 OFF, LED 2 ON, LED 3 OFF ... ok
-test_tc03_both_detected (__main__.TestActuatorSubsystem.test_tc03_both_detected)
-TC03: Helmet=Yes, Gloves=Yes -> LED 1 OFF, LED 2 OFF, LED 3 ON ... ok
-test_tc04_neither_detected (__main__.TestActuatorSubsystem.test_tc04_neither_detected)
-TC04: Helmet=No, Gloves=No -> LED 1 OFF, LED 2 OFF, LED 3 OFF ... ok
+test_red_blinking_toggle_and_isolation (test_actuator.TestActuatorSubsystem.test_red_blinking_toggle_and_isolation)
+Verify Red blinking toggles state over time while Green and Yellow remain strictly OFF. ... ok
+test_safe_state_recovery (test_actuator.TestActuatorSubsystem.test_safe_state_recovery)
+Verify actuators immediately de-energize to Safe State (all LOW, stop blinking) on shutdown. ... ok
+test_tc01_helmet_only (test_actuator.TestActuatorSubsystem.test_tc01_helmet_only)
+TC01: Helmet=Yes, Gloves=No -> Green ON, Yellow OFF, Red OFF ... ok
+test_tc02_gloves_only (test_actuator.TestActuatorSubsystem.test_tc02_gloves_only)
+TC02: Helmet=No, Gloves=Yes -> Green OFF, Yellow ON, Red OFF ... ok
+test_tc03_both_detected (test_actuator.TestActuatorSubsystem.test_tc03_both_detected)
+TC03: Helmet=Yes, Gloves=Yes -> Green OFF, Yellow OFF, Red BLINKING ... ok
+test_tc04_neither_detected (test_actuator.TestActuatorSubsystem.test_tc04_neither_detected)
+TC04: Helmet=No, Gloves=No -> Green OFF, Yellow OFF, Red OFF ... ok
 
 ----------------------------------------------------------------------
-Ran 6 tests in 0.006s
+Ran 7 tests in 0.156s
 
 OK
+[GPIO] Physical GPIO not available (No module named 'gpiozero'). Running in Virtual/Simulated Mode for live dashboard.
+[GPIO] Physical GPIO not available (No module named 'gpiozero'). Running in Virtual/Simulated Mode for live dashboard.
+[GPIO] Pins reset and released.
+[GPIO] Physical GPIO not available (No module named 'gpiozero'). Running in Virtual/Simulated Mode for live dashboard.
+[GPIO] Pins reset and released.
+[GPIO] Physical GPIO not available (No module named 'gpiozero'). Running in Virtual/Simulated Mode for live dashboard.
+[GPIO] Pins reset and released.
+[GPIO] Physical GPIO not available (No module named 'gpiozero'). Running in Virtual/Simulated Mode for live dashboard.
+[GPIO] Pins reset and released.
+[GPIO] Physical GPIO not available (No module named 'gpiozero'). Running in Virtual/Simulated Mode for live dashboard.
+[GPIO] Pins reset and released.
+[GPIO] Physical GPIO not available (No module named 'gpiozero'). Running in Virtual/Simulated Mode for live dashboard.
+[GPIO] Pins reset and released.
+[GPIO] Physical GPIO not available (No module named 'gpiozero'). Running in Virtual/Simulated Mode for live dashboard.
+[GPIO] Pins reset and released.

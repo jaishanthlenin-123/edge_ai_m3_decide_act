@@ -28,7 +28,7 @@ $$\text{Helmet\_Combined} = \text{Helmet}_{S1} \lor \text{Helmet}_{S2}$$
 $$\text{Gloves\_Combined} = \text{Gloves}_{S1} \lor \text{Gloves}_{S2}$$
 $$\text{Both\_Combined}   = \text{Helmet\_Combined} \land \text{Gloves\_Combined}$$
 
-If Station 1 detects only a Helmet, and Station 2 detects only Gloves, the logical union recognizes that both requirements are met across the inspection zone and activates **ALL THREE LEDs (Green, Yellow, Red)**.
+If Station 1 detects only a Helmet, and Station 2 detects only Gloves, the logical union recognizes that both requirements are met across the inspection zone and commands the Red LED to blink while keeping Green and Yellow OFF (`BOTH DETECTED – RED LED BLINKING`).
 
 ---
 
@@ -50,7 +50,7 @@ evidence/M3/02_two_stream_pipeline/
 The dual-stream runtime monitor captures both feeds running concurrently:
 - **Left Canvas (Station 01):** Assembly inspection stream showing bounding boxes on safety helmet, independent FPS meter.
 - **Right Canvas (Station 02):** Conveyor hand inspection stream showing bounding boxes on safety gloves, independent FPS meter.
-- **Bottom Arbitration Banner:** Shows the arbitrated hardware state: `ALL 3 LEDS ACTIVE (BOTH HELMET & GLOVES)`.
+- **Bottom Arbitration Banner:** Shows the arbitrated hardware state: `BOTH DETECTED – RED LED BLINKING`.
 
 ![Two-Stream Concurrent Feed](screenshots/two_stream_fps_and_feed.png)
 
@@ -64,19 +64,22 @@ Integration tests in `tests/M3/test_two_stream_pipeline.py` verify thread concur
 ----------------------------------------------------------------------
 Running Two-Stream Pipeline Concurrency Suite (M3-DOC-02)
 ----------------------------------------------------------------------
-[Test 1] Stream 1 (STATION-01): FPS=4.3, Status=STREAMING
-[Test 1] Stream 2 (STATION-02): FPS=4.1, Status=STREAMING
+[Test 1] Stream 1 (STATION-01): FPS=13.6, Status=STREAMING
+[Test 1] Stream 2 (STATION-02): FPS=13.6, Status=STREAMING
 test_01_simultaneous_execution_and_independent_fps ... ok
 [Test 2] Stream 1 Counts: {'helmet': 2, 'gloves': 0, 'head': 0, 'bare_hand': 0, 'total': 2}
 [Test 2] Stream 2 Counts: {'helmet': 0, 'gloves': 1, 'head': 0, 'bare_hand': 0, 'total': 1}
 test_02_independent_detection_results ... ok
-[Test 3] Arbitrated GPIO State: ALL 3 LEDS ACTIVE (BOTH HELMET & GLOVES)
+[Test 3] Arbitrated GPIO State: BOTH DETECTED – RED LED BLINKING
 test_03_actuator_arbitration_logic ... ok
 [Test 4] Saved Dual-Stream Evidence to: evidence/M3/02_two_stream_pipeline/screenshots/two_stream_fps_and_feed.png
 test_04_save_dual_stream_evidence ... ok
 
 ----------------------------------------------------------------------
-Ran 4 tests in 5.321s
+Ran 4 tests in 7.191s
+
+OK
+```
 
 OK
 ```
@@ -88,3 +91,4 @@ OK
 
 - **Thread Concurrency:** Confirmed simultaneous execution without frame-dropping or resource deadlocks.
 - **Actuator Arbitration:** Successfully tested multi-camera cross-correlation where split detections cleanly trigger the combined LED state.
+

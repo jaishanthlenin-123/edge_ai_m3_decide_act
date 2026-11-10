@@ -311,27 +311,35 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Raspberry Pi 5 GPIO Stack Lights Telemetry
+    // Raspberry Pi 5 GPIO Stack Lights Telemetry (Authoritative 3-LED Logic)
     if (data.gpio) {
       const g = data.gpio;
-      const isYellow = !!(g.yellow && g.yellow.active);
-      const isGreen = !!(g.green && g.green.active);
-      const isRed = !!(g.red && g.red.active);
+      const isRedBlinking = !!(g.red && g.red.blinking);
+      // When Red is blinking, Green and Yellow must remain strictly OFF
+      const isYellow = isRedBlinking ? false : !!(g.yellow && g.yellow.active);
+      const isGreen = isRedBlinking ? false : !!(g.green && g.green.active);
+      const isRed = !!(g.red && (g.red.active || g.red.blinking));
 
       // Mini lamps in KPI row
       if (el.kpiLampYellow) el.kpiLampYellow.classList.toggle('active', isYellow);
       if (el.kpiLampGreen) el.kpiLampGreen.classList.toggle('active', isGreen);
-      if (el.kpiLampRed) el.kpiLampRed.classList.toggle('active', isRed);
+      if (el.kpiLampRed) {
+        el.kpiLampRed.classList.toggle('active', isRed);
+        el.kpiLampRed.classList.toggle('blinking', isRedBlinking);
+      }
 
       // Large lamps in Sidebar Panel
       if (el.panelLampYellow) el.panelLampYellow.classList.toggle('active', isYellow);
       if (el.panelLampGreen) el.panelLampGreen.classList.toggle('active', isGreen);
-      if (el.panelLampRed) el.panelLampRed.classList.toggle('active', isRed);
+      if (el.panelLampRed) {
+        el.panelLampRed.classList.toggle('active', isRed);
+        el.panelLampRed.classList.toggle('blinking', isRedBlinking);
+      }
 
       // Status text
       if (el.kpiGpioStateText) {
         el.kpiGpioStateText.textContent = g.active_label || 'ALL LEDS OFF';
-        if (isRed) {
+        if (isRedBlinking || isRed) {
           el.kpiGpioStateText.style.color = '#ff1744';
         } else if (isGreen) {
           el.kpiGpioStateText.style.color = '#00e676';

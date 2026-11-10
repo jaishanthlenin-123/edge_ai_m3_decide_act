@@ -54,18 +54,19 @@ class TestTwoStreamPipeline(unittest.TestCase):
         self.assertGreater(s2_counts.get("gloves", 0), 0, "Stream 2 must detect gloves")
 
     def test_03_actuator_arbitration_logic(self):
-        """Verify multi-stream arbitration activates all 3 LEDs when S1 has helmet and S2 has gloves."""
+        """Verify multi-stream arbitration blinks Red LED and turns Green/Yellow OFF when S1 has helmet and S2 has gloves."""
         time.sleep(0.5)
         state = gpio_controller.get_state()
         print(f"[Test 3] Arbitrated GPIO State: {state['active_label']}")
-        # Under union policy: S1 has helmet, S2 has gloves -> Both are active in system -> All 3 LEDs ON
-        self.assertTrue(state["green"]["active"], "LED 1 (Helmet) must be ON via arbitration")
-        self.assertTrue(state["yellow"]["active"], "LED 2 (Gloves) must be ON via arbitration")
-        self.assertTrue(state["red"]["active"], "LED 3 (Both) must be ON via arbitration")
+        # Under union policy: S1 has helmet, S2 has gloves -> Both are active in system -> Red LED BLINKING, Green & Yellow OFF
+        self.assertFalse(state["green"]["active"], "LED 1 (Helmet) must be OFF via arbitration")
+        self.assertFalse(state["yellow"]["active"], "LED 2 (Gloves) must be OFF via arbitration")
+        self.assertTrue(state["red"]["blinking"], "LED 3 (Both) must be BLINKING via arbitration")
+        self.assertEqual(state["active_condition"], "RED_BLINKING")
 
     def test_04_save_dual_stream_evidence(self):
         """Generate and save dual-stream evidence frame."""
-        out_dir = "evidence/M3/02_two_stream_pipeline"
+        out_dir = "evidence/M3/02_two_stream_pipeline/screenshots"
         os.makedirs(out_dir, exist_ok=True)
         frame = self.manager.get_combined_dashboard_frame()
         self.assertIsNotNone(frame, "Combined frame must be rendered")

@@ -538,23 +538,31 @@ class EdgeVisionEngine:
 
         # Draw Raspberry Pi 5 3-LED Stack Light Indicator in HUD (Upper Right overlay)
         if gpio_state is not None:
-            # Yellow (Gloves Only - Pin 11)
-            y_on = gpio_state.get("yellow", {}).get("active", False)
+            r_blink = gpio_state.get("red", {}).get("blinking", False)
+
+            # Yellow (Gloves Only - Pin 11) - strictly OFF if Red is blinking
+            y_on = False if r_blink else gpio_state.get("yellow", {}).get("active", False)
             y_col = (0, 214, 255) if y_on else (25, 55, 65)
             cv2.circle(frame, (w - 240, 18), 6, y_col, -1)
             if y_on: cv2.circle(frame, (w - 240, 18), 8, (0, 214, 255), 1)
 
-            # Green (Helmet Only - Pin 13)
-            g_on = gpio_state.get("green", {}).get("active", False)
+            # Green (Helmet Only - Pin 13) - strictly OFF if Red is blinking
+            g_on = False if r_blink else gpio_state.get("green", {}).get("active", False)
             g_col = (60, 225, 60) if g_on else (20, 60, 30)
             cv2.circle(frame, (w - 222, 18), 6, g_col, -1)
             if g_on: cv2.circle(frame, (w - 222, 18), 8, (60, 225, 60), 1)
 
-            # Red (Both Helmet & Gloves - Pin 15)
-            r_on = gpio_state.get("red", {}).get("active", False)
-            r_col = (60, 60, 245) if r_on else (30, 30, 75)
-            cv2.circle(frame, (w - 204, 18), 6, r_col, -1)
-            if r_on: cv2.circle(frame, (w - 204, 18), 8, (60, 60, 245), 1)
+            # Red (Both Helmet & Gloves - Pin 15) - Blinks when both detected
+            r_active = gpio_state.get("red", {}).get("active", False)
+            if r_blink:
+                r_flash = (int(time.time() * 2) % 2 == 0)
+                r_col = (60, 60, 245) if r_flash else (30, 30, 75)
+                cv2.circle(frame, (w - 204, 18), 6, r_col, -1)
+                if r_flash: cv2.circle(frame, (w - 204, 18), 8, (60, 60, 245), 1)
+            else:
+                r_col = (60, 60, 245) if r_active else (30, 30, 75)
+                cv2.circle(frame, (w - 204, 18), 6, r_col, -1)
+                if r_active: cv2.circle(frame, (w - 204, 18), 8, (60, 60, 245), 1)
 
         # Bottom HUD stats bar
         overlay_bot = frame.copy()

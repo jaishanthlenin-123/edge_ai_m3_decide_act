@@ -163,7 +163,7 @@
         <div class="led-tower-mini">
           <div class="mini-lamp yellow" id="kpi-lamp-yellow" title="Yellow LED: GPIO 17 (Pin 11) - Gloves Only">Y</div>
           <div class="mini-lamp green" id="kpi-lamp-green" title="Green LED: GPIO 27 (Pin 13) - Helmet Only">G</div>
-          <div class="mini-lamp red" id="kpi-lamp-red" title="Red LED: GPIO 22 (Pin 15) - Both Helmet & Gloves">R</div>
+          <div class="mini-lamp red" id="kpi-lamp-red" title="Red LED: GPIO 22 (Pin 15) - Both Helmet & Gloves (Blinking)">R</div>
         </div>
         <div class="kpi-subtext" id="kpi-gpio-desc" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
           <span id="kpi-gpio-state-text" style="color: var(--text-muted);">ALL LEDS OFF</span>
@@ -344,8 +344,8 @@
                 <span class="lamp-pin">PIN 13 (GPIO27)</span>
               </div>
               <div class="lamp-unit">
-                <div class="lamp-bulb red" id="panel-lamp-red" title="Both Helmet & Gloves">R</div>
-                <span class="lamp-name">BOTH PPE</span>
+                <div class="lamp-bulb red" id="panel-lamp-red" title="Both Helmet & Gloves (Blinking)">R</div>
+                <span class="lamp-name">BOTH PPE (BLINK)</span>
                 <span class="lamp-pin">PIN 15 (GPIO22)</span>
               </div>
             </div>
@@ -377,7 +377,7 @@
                   <td><span class="pin-badge red">RED</span></td>
                   <td><b>PIN 15</b></td>
                   <td>GPIO 22</td>
-                  <td>Both Helmet &amp; Gloves</td>
+                  <td>Both Detected (Blinking)</td>
                 </tr>
                 <tr>
                   <td><span class="pin-badge gnd">GND</span></td>

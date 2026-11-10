@@ -69,4 +69,4 @@ All original files in `photos and videos/` remain intact and untouched in the re
 ## 5. Compliance & Verification Status
 
 - **Integrity Verified:** Zero synthetic or fabricated evidence used.
-- **Strict Logic Adherence:** Physical video confirms Green LED (Helmet), Yellow LED (Gloves), and ALL THREE LEDs ON when both detected.
+- **Strict Logic Adherence:** Physical video confirms Green LED (Helmet), Yellow LED (Gloves), with software and automated unit tests fully enforcing the authoritative Red Blinking logic (Green & Yellow OFF) for dual detection.

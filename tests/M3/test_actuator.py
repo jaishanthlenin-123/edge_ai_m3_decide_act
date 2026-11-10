@@ -1,11 +1,12 @@
 """
 Milestone 3 - Task 4: Actuator Hardware & Simulation Verification
-Tests TC01 - TC04 against the Three-LED truth table, GPIO assignments, and safe-state behavior.
+Tests TC01 - TC04 against the authoritative Three-LED truth table, GPIO assignments,
+non-blocking blinking behavior, and safe-state recovery.
 """
 
 import sys
 import unittest
-import os
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
@@ -14,7 +15,8 @@ from gpio_manager import PiGPIOManager, PIN_GREEN_BCM, PIN_YELLOW_BCM, PIN_RED_B
 
 class TestActuatorSubsystem(unittest.TestCase):
     def setUp(self):
-        self.gpio = PiGPIOManager()
+        # Use short blink interval for fast, deterministic unit testing
+        self.gpio = PiGPIOManager(blink_interval=0.1)
 
     def tearDown(self):
         self.gpio.cleanup()
@@ -27,42 +29,63 @@ class TestActuatorSubsystem(unittest.TestCase):
         self.assertEqual(PIN_GND_PHYSICAL, 14, "GND must map to Physical Pin 14")
 
     def test_tc01_helmet_only(self):
-        """TC01: Helmet=Yes, Gloves=No -> LED 1 ON, LED 2 OFF, LED 3 OFF"""
+        """TC01: Helmet=Yes, Gloves=No -> Green ON, Yellow OFF, Red OFF"""
         state = self.gpio.update(has_helmet=True, has_gloves=False)
         self.assertTrue(state["green"]["active"], "LED 1 (Helmet / Green) must be ON")
         self.assertFalse(state["yellow"]["active"], "LED 2 (Gloves / Yellow) must be OFF")
         self.assertFalse(state["red"]["active"], "LED 3 (Both / Red) must be OFF")
+        self.assertFalse(state["red"]["blinking"], "LED 3 must not be blinking")
 
     def test_tc02_gloves_only(self):
-        """TC02: Helmet=No, Gloves=Yes -> LED 1 OFF, LED 2 ON, LED 3 OFF"""
+        """TC02: Helmet=No, Gloves=Yes -> Green OFF, Yellow ON, Red OFF"""
         state = self.gpio.update(has_helmet=False, has_gloves=True)
         self.assertFalse(state["green"]["active"], "LED 1 (Helmet / Green) must be OFF")
         self.assertTrue(state["yellow"]["active"], "LED 2 (Gloves / Yellow) must be ON")
         self.assertFalse(state["red"]["active"], "LED 3 (Both / Red) must be OFF")
+        self.assertFalse(state["red"]["blinking"], "LED 3 must not be blinking")
 
     def test_tc03_both_detected(self):
-        """TC03: Helmet=Yes, Gloves=Yes -> LED 1 ON, LED 2 ON, LED 3 ON"""
+        """TC03: Helmet=Yes, Gloves=Yes -> Green OFF, Yellow OFF, Red BLINKING"""
         state = self.gpio.update(has_helmet=True, has_gloves=True)
-        self.assertTrue(state["green"]["active"], "LED 1 (Helmet / Green) must be ON")
-        self.assertTrue(state["yellow"]["active"], "LED 2 (Gloves / Yellow) must be ON")
-        self.assertTrue(state["red"]["active"], "LED 3 (Both / Red) must be ON")
+        self.assertFalse(state["green"]["active"], "LED 1 (Helmet / Green) must be OFF when both detected")
+        self.assertFalse(state["yellow"]["active"], "LED 2 (Gloves / Yellow) must be OFF when both detected")
+        self.assertTrue(state["red"]["blinking"], "LED 3 (Both / Red) must be BLINKING")
+        self.assertEqual(state["active_condition"], "RED_BLINKING")
 
     def test_tc04_neither_detected(self):
-        """TC04: Helmet=No, Gloves=No -> LED 1 OFF, LED 2 OFF, LED 3 OFF"""
+        """TC04: Helmet=No, Gloves=No -> Green OFF, Yellow OFF, Red OFF"""
         state = self.gpio.update(has_helmet=False, has_gloves=False)
         self.assertFalse(state["green"]["active"], "LED 1 (Helmet / Green) must be OFF")
         self.assertFalse(state["yellow"]["active"], "LED 2 (Gloves / Yellow) must be OFF")
         self.assertFalse(state["red"]["active"], "LED 3 (Both / Red) must be OFF")
+        self.assertFalse(state["red"]["blinking"], "LED 3 must not be blinking")
+
+    def test_red_blinking_toggle_and_isolation(self):
+        """Verify Red blinking toggles state over time while Green and Yellow remain strictly OFF."""
+        self.gpio.update(has_helmet=True, has_gloves=True)
+        self.assertTrue(self.gpio.is_blinking)
+
+        # In simulation mode, check that the state toggles over the blink interval
+        initial_state = self.gpio.state_red
+        # Wait slightly more than 1 interval
+        time.sleep(0.15)
+        second_state = self.gpio.state_red
+        self.assertNotEqual(initial_state, second_state, "Red LED virtual state must toggle across blink intervals")
+
+        # Crucial check: Green and Yellow must remain strictly False throughout
+        self.assertFalse(self.gpio.state_green, "Green must remain strictly OFF during dual detection")
+        self.assertFalse(self.gpio.state_yellow, "Yellow must remain strictly OFF during dual detection")
 
     def test_safe_state_recovery(self):
-        """Verify actuators immediately de-energize to Safe State (all LOW) on fault or shutdown."""
+        """Verify actuators immediately de-energize to Safe State (all LOW, stop blinking) on shutdown."""
         self.gpio.update(has_helmet=True, has_gloves=True)
-        self.gpio.cleanup()
+        self.gpio.safe_state()
         state = self.gpio.get_state()
         self.assertFalse(state["green"]["active"], "Green must be de-energized in safe state")
         self.assertFalse(state["yellow"]["active"], "Yellow must be de-energized in safe state")
         self.assertFalse(state["red"]["active"], "Red must be de-energized in safe state")
+        self.assertFalse(state["red"]["blinking"], "Red blinking must be terminated in safe state")
+
 
 if __name__ == "__main__":
     unittest.main()
-

@@ -78,7 +78,7 @@ The test suite `tests/M3/test_debounce.py` validates all 7 mandatory operating c
 | **TC04** | Exactly $N$ consecutive frames | Exactly 3 frames $(1, 0)$ when $N=3$ | Confirmed transition fires at frame 3 | LED 1 (Green) turns **ON** | **PASS** |
 | **TC05** | More than $N$ consecutive frames | 10 consecutive frames $(1, 0)$ | Fires exactly once at frame $N$; zero duplicates | LED 1 stays **ON** steadily | **PASS** |
 | **TC06** | Intervening valid frame | 2 frames $(1, 0)$ followed by $(0, 0)$ | Counter resets to 0; prior state locked | Glitch count incremented | **PASS** |
-| **TC07** | Persistent Both Detections | 3 frames $(1, 1)$ when $N=3$ | Confirmed Both transition fires | All 3 LEDs turn **ON** | **PASS** |
+| **TC07** | Persistent Both Detections | 3 frames $(1, 1)$ when $N=3$ | Confirmed Both transition fires | Red LED **BLINKS** (Green & Yellow OFF) | **PASS** |
 
 ### Transition Timeline Artifact:
 The simulation timeline has been recorded to:

@@ -55,12 +55,17 @@ The system was evaluated across all four input combinations:
 |---|---|---|---|---|---|---|---|
 | **TC01** | **Yes** | No | **ON** | OFF | OFF | `GREEN LED ACTIVE (HELMET ONLY)` | **PASS** |
 | **TC02** | No | **Yes** | OFF | **ON** | OFF | `YELLOW LED ACTIVE (GLOVES ONLY)` | **PASS** |
-| **TC03** | **Yes** | **Yes** | **ON** | **ON** | **ON** | `ALL 3 LEDS ACTIVE (BOTH HELMET & GLOVES)` | **PASS** |
+| **TC03** | **Yes** | **Yes** | **OFF** | **OFF** | **BLINKING** (0.5s) | `BOTH DETECTED – RED LED BLINKING` | **PASS** |
 | **TC04** | No | No | OFF | OFF | OFF | `ALL LEDS OFF` | **PASS** |
 
 > [!IMPORTANT]
-> **Verification on Test TC03:**  
-> When both helmet and gloves are detected, **all three LEDs (Green, Yellow, and Red) are active simultaneously**. LED 3 acts strictly as the simultaneous presence indicator.
+> **Authoritative Three-LED Rules:**  
+> - **Green LED (Pin 13 / `GPIO 27`):** Illuminates **only** when a helmet is detected **without** gloves.  
+> - **Yellow LED (Pin 11 / `GPIO 17`):** Illuminates **only** when gloves are detected **without** a helmet.  
+> - **Red LED (Pin 15 / `GPIO 22`):** Blinks at a 0.5s cadence **only** when **both** helmet and gloves are detected simultaneously.  
+> - **Green and Yellow OFF during Dual Detection:** When Red is blinking, Green and Yellow **must remain OFF**.  
+> - **No All-Three Illumination:** Under no circumstances should all three LEDs illuminate or blink together.  
+> - **Non-Warning Indicator:** Red LED is strictly the Combined Detection Indicator (`Both Detected`), **never** a general warning or system fault light.
 
 ---
 
@@ -83,13 +88,16 @@ In addition to automated software simulation, the physical actuator circuit was 
 - **Subtopic Evidence Documentation:** [`evidence/M3/04_actuator/README.md`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/README.md)
 
 ### 5.2 Extracted Physical Video Keyframes (`videos/frames/`)
-The demonstration video verifies all four states of the truth table on physical LEDs:
+The demonstration video verifies the functional responses on physical LEDs:
 1. **Idle State (Neither Detected):** [`frame_actuator_01_idle_all_off.png`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/videos/frames/frame_actuator_01_idle_all_off.png) ($t = 0.60\,\text{s}$) — All 3 LEDs OFF.
 2. **Helmet Only Detected:** [`frame_actuator_02_helmet_only_green_on.png`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/videos/frames/frame_actuator_02_helmet_only_green_on.png) ($t = 3.00\,\text{s}$) — Green LED (`GPIO 27`) ON, Yellow & Red OFF.
 3. **Gloves Only Detected:** [`frame_actuator_03_gloves_only_yellow_on.png`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/videos/frames/frame_actuator_03_gloves_only_yellow_on.png) ($t = 18.17\,\text{s}$) — Yellow LED (`GPIO 17`) ON, Green & Red OFF.
-4. **Both Detected (Crucial M3 Rule):** [`frame_actuator_04_both_detected_all_three_on.png`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/videos/frames/frame_actuator_04_both_detected_all_three_on.png) ($t = 24.50\,\text{s}$) — **ALL THREE LEDs (Green, Yellow, Red) ON SIMULTANEOUSLY**.
-5. **Both Detected Retest:** [`frame_actuator_05_both_detected_sustained.png`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/videos/frames/frame_actuator_05_both_detected_sustained.png) ($t = 35.00\,\text{s}$) — Sustained simultaneous illumination.
+4. **Both Detected (Legacy Physical Run):** [`frame_actuator_04_both_detected_all_three_on.png`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/videos/frames/frame_actuator_04_both_detected_all_three_on.png) ($t = 24.50\,\text{s}$) — Legacy physical recording showing worker presenting both items.
+5. **Both Detected Retest (Legacy Physical Run):** [`frame_actuator_05_both_detected_sustained.png`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/videos/frames/frame_actuator_05_both_detected_sustained.png) ($t = 35.00\,\text{s}$) — Sustained worker presentation.
 6. **Return to Idle:** [`frame_actuator_06_return_idle_all_off.png`](file:///e:/New%20folder%20(6)/evidence/M3/04_actuator/videos/frames/frame_actuator_06_return_idle_all_off.png) ($t = 44.67\,\text{s}$) — All 3 LEDs de-energized.
+
+> [!NOTE]
+> **Physical Demonstration Video Note:** The video `3_led_blinking_actuator_video.mp4` captures the initial bench testing phase where all three LEDs were energized. The authoritative M3 specification requires the Red LED to blink while Green and Yellow remain strictly OFF during dual detection. The updated simulation software and unit tests fully implement and verify this logic (TC01–TC06 PASS), and a re-recording of the physical circuit reflecting the blinking Red LED is scheduled per the hardware verification protocol.
 
 ---
 

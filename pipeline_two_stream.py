@@ -209,7 +209,7 @@ class TwoStreamManager:
         Actuator Arbitration Policy:
         helmet_active = stream1.has_helmet OR stream2.has_helmet
         glove_active  = stream1.has_gloves OR stream2.has_gloves
-        both_active   = helmet_active AND glove_active
+        both_active   = helmet_active AND glove_active -> Red LED Blinks (Green & Yellow OFF)
         """
         while self.is_running:
             s1_helmet = (self.stream1.counts.get("helmet", 0) > 0)

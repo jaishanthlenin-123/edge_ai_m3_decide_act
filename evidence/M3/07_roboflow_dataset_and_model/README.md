@@ -90,3 +90,4 @@ from ultralytics import YOLO
 model = YOLO("best.pt")
 results = model.predict(source="samples/compliant.jpg", imgsz=320, conf=0.35)
 ```
+

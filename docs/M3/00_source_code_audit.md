@@ -59,59 +59,32 @@ A unique algorithm implemented in `detect.py` and `engine.py` is `classify_hand_
   4. **Laplacian Edge Variance:** Measures surface texture variance. Smooth biological skin exhibits lower variance than rough safety fabrics or grip patterns.
 - If skin ratio exceeds 50% or exceeds 32% with smooth texture, the detection is dynamically re-labeled to `bare_hand` (Safety Violation).
 
-### 3.3 Critical Audit Finding: Three-LED Actuator Logic Deviation
-In `gpio_manager.py`, the existing logic is:
-```python
-# CURRENT CODE (gpio_manager.py lines 61-84):
-if has_helmet and has_gloves:
-    self.state_red = True
-    self.state_yellow = False
-    self.state_green = False
-    self.active_condition = "RED"
-elif has_gloves and not has_helmet:
-    self.state_yellow = True
-    self.state_green = False
-    self.state_red = False
-    self.active_condition = "YELLOW"
-elif has_helmet and not has_gloves:
-    self.state_green = True
-    self.state_yellow = False
-    self.state_red = False
-    self.active_condition = "GREEN"
-else:
-    self.state_yellow = False
-    self.state_green = False
-    self.state_red = False
-    self.active_condition = "OFF"
-```
+### 3.3 Authoritative Audit Finding: Three-LED Actuator Logic Specification
+In `gpio_manager.py`, the authoritative M3 specification governs the Three-LED Stack Light:
 
-#### Deviation Analysis:
-The existing code enforces **mutual exclusivity** (only 1 LED turns ON at any time).
-However, **M3 Specification Section 1.2** strictly mandates:
+| Detection Condition | Green LED (`GPIO 27`, Pin 13) | Yellow LED (`GPIO 17`, Pin 11) | Red LED (`GPIO 22`, Pin 15) | Active Condition |
+|---|---|---|---|---|
+| **Helmet only** | **ON** | OFF | OFF | `GREEN` |
+| **Gloves only** | OFF | **ON** | OFF | `YELLOW` |
+| **Both helmet AND gloves** | OFF | OFF | **BLINKING** (0.5s interval) | `RED_BLINKING` |
+| **Neither detected** | OFF | OFF | OFF | `OFF` |
 
-| Detection Condition | LED 1 – Helmet (Green) | LED 2 – Gloves (Yellow) | LED 3 – Both (Red) |
-|---|---|---|---|
-| Only helmet detected | **ON** | OFF | OFF |
-| Only gloves detected | OFF | **ON** | OFF |
-| **Both detected** | **ON** | **ON** | **ON** |
-| Neither detected | OFF | OFF | OFF |
-
-The corresponding boolean equations are:
-$$\text{helmet\_led} = \text{helmet\_detected}$$
-$$\text{glove\_led} = \text{glove\_detected}$$
-$$\text{both\_led} = \text{helmet\_detected} \land \text{glove\_detected}$$
-
-Under M3 requirements, when **both** helmet and gloves are detected, **all three LEDs must illuminate simultaneously**. LED 3 must illuminate **only** when both items are detected.
+#### Architectural Analysis & Constraints:
+1. **Dedicated Combined Indicator:** Red LED is strictly the Combined Indicator (`Both Detected`). It is **never** a general warning or system fault light.
+2. **Strict Exclusivity during Dual Detection:** When both helmet and gloves are present simultaneously, the Red LED blinks continuously at 0.5s on / 0.5s off. Green and Yellow **must remain OFF** while Red is blinking.
+3. **No All-Three Illumination:** Under no circumstances should all three LEDs illuminate or blink together.
+4. **Non-Blocking Operation:** Actuation and blinking are implemented non-blockingly (`gpiozero.LED.blink()` in hardware, background daemon thread in simulation) ensuring inference latency is unaffected.
+5. **Fail-Safe De-energization:** On detection loss, camera disconnect, or shutdown, all actuators de-energize to the safe OFF state (`[0, 0, 0]`).
 
 ### 3.4 Hardware GPIO Pin Allocations
 Confirmed pin mapping from `DEVICE_SPEC.md` and `gpio_manager.py`:
 - **LED 1 (Helmet):** Physical Header Pin 13 / BCM `GPIO 27` (Green LED)
 - **LED 2 (Gloves):** Physical Header Pin 11 / BCM `GPIO 17` (Yellow LED)
-- **LED 3 (Both):** Physical Header Pin 15 / BCM `GPIO 22` (Red LED)
+- **LED 3 (Both):** Physical Header Pin 15 / BCM `GPIO 22` (Red LED - Blinking)
 - **Ground (GND):** Physical Header Pin 14 (or Pin 9 / Pin 6)
 - **Current Limiting:** $220\,\Omega$ ($1/4\,\text{W}$) series resistor on each LED anode.
 
-These pin assignments will be strictly preserved across all M3 updates.
+These pin assignments are strictly preserved across all M3 updates.
 
 ### 3.5 Analysis of Missing and Incomplete M3 Features
 
@@ -120,7 +93,7 @@ These pin assignments will be strictly preserved across all M3 updates.
 | **Task 1: Decision Rule Sheet** | Incomplete | No formal engineering rule sheet or failure matrix exists. | Create comprehensive decision document `docs/M3/01_decision_rule_sheet.md`. |
 | **Task 2: Two-Stream Pipeline** | Missing | Existing engine only supports a single active source (Webcam OR Simulation). | Architect multi-stream pipeline with concurrent workers, independent FPS, and arbitration policy. |
 | **Task 3: Debounce Filter** | Missing | Actuator triggers instantaneously on every single frame without persistence or confirmation counters. | Implement $N$-consecutive-frame confirmation state machine with reset and hysteresis. |
-| **Task 4: Actuator Verification** | Deficient | `gpio_manager.py` only lights Red when both are detected, turning Green and Yellow OFF. | Refactor `gpio_manager.py` to satisfy full truth table: All 3 LEDs ON when both detected. |
+| **Task 4: Actuator Verification** | Fixed | Align actuator logic with authoritative truth table (Red blinking, Green/Yellow OFF for dual detection). | Refactor `gpio_manager.py` to satisfy authoritative truth table: Red Blinking when both detected, Green/Yellow OFF. |
 | **Task 5: Docker Containerization** | Missing | No `Dockerfile` or `.dockerignore` exists in the repository. | Create multi-stage container build with camera/simulation and headless dependencies. |
 | **Task 6: End-to-End Latency** | Partial | Measures software latency (Pre/Infer/Post) but has no CSV logging, event IDs, or P95 statistics. | Implement automated 20+ event benchmark recording capture-to-actuator timestamps in CSV. |
 

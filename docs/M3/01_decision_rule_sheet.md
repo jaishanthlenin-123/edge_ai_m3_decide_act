@@ -44,10 +44,10 @@ The decision engine evaluates the filtered frame detections:
 helmet_detected = bool(count_helmet > 0)
 glove_detected  = bool(count_gloves > 0)
 
-# 2. Critical M3 Three-LED Actuator Logic
-helmet_led = helmet_detected
-glove_led  = glove_detected
-both_led   = helmet_detected and glove_detected
+# 2. Authoritative M3 Three-LED Actuator Logic
+green_led      = helmet_detected and not glove_detected
+yellow_led     = glove_detected and not helmet_detected
+red_led_blink  = helmet_detected and glove_detected
 ```
 
 ### 3.1 Three-LED Truth Table
@@ -57,11 +57,17 @@ both_led   = helmet_detected and glove_detected
 | **S0** | Neither Detected | `False` | `False` | **OFF** (`0`) | **OFF** (`0`) | **OFF** (`0`) | Standby / Inspection zone clear |
 | **S1** | Only Helmet Detected | `True` | `False` | **ON** (`1`) | **OFF** (`0`) | **OFF** (`0`) | Head protected; hands unprotected/absent |
 | **S2** | Only Gloves Detected | `False` | `True` | **OFF** (`0`) | **ON** (`1`) | **OFF** (`0`) | Hands protected; head unprotected/absent |
-| **S3** | Both Detected | `True` | `True` | **ON** (`1`) | **ON** (`1`) | **ON** (`1`) | Complete PPE protection verified |
+| **S3** | Both Detected | `True` | `True` | **OFF** (`0`) | **OFF** (`0`) | **BLINKING** (0.5s) | Complete PPE protection verified (Dual Compliance) |
 
 > [!IMPORTANT]
-> **Key Behavioral Constraint:**  
-> LED 3 (Red) illuminates **exclusively** when both helmet and gloves are detected simultaneously. It must not be activated as a general fault light. When both PPE items are present, **all three LEDs (Green, Yellow, and Red) are active simultaneously**.
+> **Key Behavioral Constraints (Authoritative Requirements):**  
+> - **Green LED (Pin 13 / `GPIO 27`):** Illuminates **only** when a helmet is detected **without** gloves.  
+> - **Yellow LED (Pin 11 / `GPIO 17`):** Illuminates **only** when gloves are detected **without** a helmet.  
+> - **Red LED (Pin 15 / `GPIO 22`):** Blinks at a non-blocking 0.5s cadence **only** when **both** helmet and gloves are detected simultaneously.  
+> - **Green and Yellow OFF during Dual Detection:** When Red is blinking, Green and Yellow **must remain OFF**.  
+> - **No All-Three Illumination:** Under no circumstances should all three LEDs illuminate or blink together.  
+> - **Non-Warning Indicator:** Red LED is strictly the Combined Detection Indicator (`Both Detected`), **never** a general warning or system fault light.  
+> - **Fail-Safe OFF:** On detection loss, stale frames, or fault, all actuators return to the de-energized safe OFF state (`[0, 0, 0]`).
 
 ---
 

@@ -92,3 +92,4 @@ The 13.1-second video [`videos/initial_setup_video.mp4`](videos/initial_setup_vi
 
 - **Physical Authenticity:** All photos and video frames in this folder are **100% genuine physical recordings** of the Raspberry Pi 5 hardware and workbench.
 - **Zero Fabrication:** No synthetic, simulated, or placeholder images have been used.
+

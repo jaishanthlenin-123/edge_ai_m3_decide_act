@@ -65,7 +65,7 @@ The comprehensive test suite in `tests/M3/test_debounce.py` exercises 7 distinct
 | **Test 4** | Exactly $N=3$ consecutive frames | `[0, 1, 1, 1]` | 3 | **State Transition $\to$ ON** | **PASS** |
 | **Test 5** | Sustained state ($>N$ frames) | `[1, 1, 1, 1, 1]` | 4, 5 | Zero duplicate trigger pulses | **PASS** |
 | **Test 6** | Intervening valid frame reset | `[0, 1, 1, 0, 1]` | Reset to 1 at frame 4 | No false activation | **PASS** |
-| **Test 7** | Full 3-LED truth table debouncing | Persistent states | $N \geq 3$ | All 3 LEDs transition cleanly | **PASS** |
+| **Test 7** | Full 3-LED truth table debouncing | Persistent states | $N \geq 3$ | Red LED blinks (Green & Yellow OFF) | **PASS** |
 
 ```text
 ----------------------------------------------------------------------
@@ -93,3 +93,4 @@ OK
 
 - **Chatter Prevention:** 100% verified. Relay chattering is physically impossible under this mathematical filter.
 - **Latency Trade-Off:** Introducing $N=3$ adds a deterministic filter delay of $2 \times \text{frame interval}$ ($\sim 66\,\text{ms}$ at 30 FPS), which is well within acceptable safety boundaries.
+

@@ -69,3 +69,4 @@ Measurements sampled across 30 consecutive inspection cycles:
 
 - **SLA Compliance:** Steady-state latency ($40.98\,\text{ms}$) satisfies all industrial safety constraints ($<100\,\text{ms}$).
 - **Hardware Scalability:** On Raspberry Pi 5 with INT8/NCNN quantization, inference is projected to decrease to $<20\,\text{ms}$ ($50+\,\text{FPS}$).
+

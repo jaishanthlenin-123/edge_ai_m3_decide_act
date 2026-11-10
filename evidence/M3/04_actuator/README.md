@@ -36,7 +36,7 @@ Pin 14 (GND) <-----------------------------------------------------------------+
 
 > [!IMPORTANT]
 > **CRITICAL RULE FOR LED 3 (RED):**  
-> LED 3 is strictly the **Combined Indicator** (`Both Detected`). It illuminates **ONLY** when **BOTH** helmet and gloves are detected simultaneously. In that condition, **ALL THREE LEDs (Green, Yellow, Red) illuminate together**. LED 3 is NOT a general warning or system fault light.
+> LED 3 is strictly the **Combined Indicator** (`Both Detected`). It blinks at a non-blocking 0.5s cadence **ONLY** when **BOTH** helmet and gloves are detected simultaneously. When Red is blinking, Green and Yellow **must remain OFF**. Under no circumstances should all three LEDs illuminate or blink together. LED 3 is NOT a general warning or system fault light.
 
 ---
 
@@ -89,17 +89,33 @@ The 45.3-second video demonstrates all four states in real time:
 *Yellow LED (`GPIO 17`) illuminates; Green and Red remain OFF (`[0, 1, 0]`):*  
 ![Gloves Only Active](videos/frames/frame_actuator_03_gloves_only_yellow_on.png)
 
-#### State 4: Both Detected (Crucial M3 Rule)
-*Worker presents both items simultaneously $\to$ **ALL THREE LEDs (Green, Yellow, Red) GLOW SIMULTANEOUSLY** (`[1, 1, 1]`):*  
+#### State 4: Both Detected (Legacy Physical Bench Recording)
+*Worker presents both items simultaneously in legacy bench recording:*  
 ![All Three LEDs Active](videos/frames/frame_actuator_04_both_detected_all_three_on.png)
 
-#### State 4 Retest: Sustained Both Detection
-*Retest verifying stability under prolonged dual detection:*  
+#### State 4 Retest: Sustained Both Detection (Legacy Physical Bench Recording)
+*Retest verifying stability under prolonged dual presence:*  
 ![Sustained Both Detected](videos/frames/frame_actuator_05_both_detected_sustained.png)
 
 #### State 1 Return: Cleared / All OFF
 *All safety equipment removed $\to$ all LEDs cleanly de-energize:*  
 ![Return to Idle](videos/frames/frame_actuator_06_return_idle_all_off.png)
+
+> [!NOTE]
+> **Historical Artifact Notice & Verification Status:**  
+> The physical video file `3_led_blinking_actuator_video.mp4` and its extracted keyframes `frame_actuator_04` and `frame_actuator_05` reflect the initial exploratory bench test where all 3 LEDs were powered simultaneously. The authoritative specification strictly mandates that during dual detection, the Red LED blinks continuously at 0.5s intervals while Green and Yellow remain strictly OFF.  
+> The software implementation (`gpio_manager.py`), runtime HUD (`engine.py`, `detect.py`), web dashboard, and regression test suite (`tests/M3/test_actuator.py`) have been updated and fully verified (100% PASS rate across all 7 unit tests).  
+> A scheduled physical re-recording protocol is outlined below:
+> 
+> **Physical Verification Re-recording Checklist:**
+> - [x] Update `gpio_manager.py` with non-blocking Red blinking logic and Green/Yellow suppression.
+> - [x] Run automated regression test suite (`tests/M3/test_actuator.py`) confirming pin toggling and state isolation.
+> - [x] Regenerate live dashboard screenshot `TC03_both_detected.png` showing Red blinking with Green and Yellow OFF.
+> - [ ] Deploy updated code to physical Raspberry Pi 5 hardware.
+> - [ ] Connect Arducam UC-844 and 3-LED breadboard (`GPIO 17`, `GPIO 27`, `GPIO 22`, `GND`).
+> - [ ] Execute live inference session with physical helmet and gloves.
+> - [ ] Record 30-45s video verifying Red blinking at 0.5s while Green and Yellow remain dark during dual detection.
+> - [ ] Export new recording to `videos/` preserving historical bench archive.
 
 ---
 
@@ -111,7 +127,7 @@ Automated regression tests in `tests/M3/test_actuator.py` verify the digital log
 |---|---|---|---|---|---|---|
 | **TC01** | Helmet only | **ON** | OFF | OFF | `GREEN LED ACTIVE (HELMET ONLY)` | **PASS** |
 | **TC02** | Gloves only | OFF | **ON** | OFF | `YELLOW LED ACTIVE (GLOVES ONLY)` | **PASS** |
-| **TC03** | Both detected | **ON** | **ON** | **ON** | `ALL 3 LEDS ACTIVE (BOTH HELMET & GLOVES)` | **PASS** |
+| **TC03** | Both detected | **OFF** | **OFF** | **BLINKING** (0.5s) | `BOTH DETECTED – RED LED BLINKING` | **PASS** |
 | **TC04** | Neither detected | OFF | OFF | OFF | `ALL LEDS OFF` | **PASS** |
 
 ```text
@@ -119,6 +135,7 @@ Automated regression tests in `tests/M3/test_actuator.py` verify the digital log
 Running Actuator Subsystem Test Suite (M3-DOC-04)
 ----------------------------------------------------------------------
 test_pin_assignments ... ok
+test_red_blinking_toggle_and_isolation ... ok
 test_safe_state_recovery ... ok
 test_tc01_helmet_only ... ok
 test_tc02_gloves_only ... ok
@@ -126,7 +143,7 @@ test_tc03_both_detected ... ok
 test_tc04_neither_detected ... ok
 
 ----------------------------------------------------------------------
-Ran 6 tests in 0.015s
+Ran 7 tests in 0.155s
 
 OK
 ```
@@ -138,3 +155,4 @@ OK
 
 - **Physical Actuator Evidence:** `photos/circuit_connection_breadboard.jpeg`, `videos/3_led_blinking_actuator_video.mp4`, and `videos/frames/` represent **actual physical LEDs on a breadboard**.
 - **Software Simulation Evidence:** `screenshots/TC01_helmet_only.png` through `TC04` and `test_results/` represent **simulated GPIO registers** executed in the automated test harness.
+

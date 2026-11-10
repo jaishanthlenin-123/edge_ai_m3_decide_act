@@ -22,21 +22,21 @@ The system features **exactly THREE LEDs**:
 $$\begin{aligned}
 \text{helmet\_detected} &= \text{count}(\text{helmet}) > 0 \\
 \text{glove\_detected}  &= \text{count}(\text{gloves}) > 0 \\
-\text{helmet\_led}      &= \text{helmet\_detected} \\
-\text{glove\_led}       &= \text{glove\_detected} \\
-\text{both\_led}        &= \text{helmet\_detected} \land \text{glove\_detected}
+\text{green\_led}       &= \text{helmet\_detected} \land \neg \text{glove\_detected} \\
+\text{yellow\_led}      &= \text{glove\_detected} \land \neg \text{helmet\_detected} \\
+\text{red\_led\_blink}  &= \text{helmet\_detected} \land \text{glove\_detected}
 \end{aligned}$$
 
 | Test Case | Helmet Detected | Gloves Detected | LED 1 (Green) | LED 2 (Yellow) | LED 3 (Red) | Active Output Status |
 |---|---|---|---|---|---|---|
 | **TC01** | **Yes** | No | **ON** | OFF | OFF | `GREEN LED ACTIVE (HELMET ONLY)` |
 | **TC02** | No | **Yes** | OFF | **ON** | OFF | `YELLOW LED ACTIVE (GLOVES ONLY)` |
-| **TC03** | **Yes** | **Yes** | **ON** | **ON** | **ON** | **ALL 3 LEDS ACTIVE (BOTH HELMET & GLOVES)** |
+| **TC03** | **Yes** | **Yes** | **OFF** | **OFF** | **BLINKING** (0.5s) | **BOTH DETECTED – RED LED BLINKING** |
 | **TC04** | No | No | OFF | OFF | OFF | `ALL LEDS OFF (STANDBY / CLEAR)` |
 
 > [!IMPORTANT]
 > **CRITICAL RULE FOR LED 3 (RED):**  
-> LED 3 is strictly the **Combined Indicator** (`Both Detected`). It is **NOT** a general warning or system fault light. When both helmet and gloves are detected simultaneously, **ALL THREE LEDs (Green, Yellow, Red) illuminate simultaneously**.
+> LED 3 is strictly the **Combined Indicator** (`Both Detected`). It is **NOT** a general warning or system fault light. When both helmet and gloves are detected simultaneously, **Red LED blinks at a 0.5s interval**, while Green and Yellow **must remain OFF**. Under no circumstances should all three LEDs illuminate or blink together.
 
 ---
 
@@ -63,7 +63,7 @@ In this scenario, the subject presents safety helmet only to the vision sensor. 
 ![Helmet Only Scenario](screenshots/scenario_helmet_only.jpeg)
 
 ### 4.2 Simultaneous Helmet and Gloves Detection Scenarios (`TC03`)
-In these scenarios, the subject presents both personal protective equipment items simultaneously. The system activates **ALL THREE LEDs (Green, Yellow, and Red)**. Two distinct angles and distances are evaluated to confirm robustness against orientation and scale:
+In these scenarios, the subject presents both personal protective equipment items simultaneously. The system commands the **Red LED to blink at 0.5s cadence, while Green and Yellow remain strictly OFF**. Two distinct angles and distances are evaluated to confirm robustness against orientation and scale:
 
 #### Pose 1 – Standard Perspective
 ![Both Helmet and Gloves Pose 1](screenshots/scenario_both_helmet_gloves_pose1.jpeg)
@@ -75,20 +75,21 @@ In these scenarios, the subject presents both personal protective equipment item
 
 ## 5. Test Results & Automated Verification
 
-Automated unit tests in `tests/M3/test_decision_rules.py` verify all five test cases (TC01–TC05) with 100% pass rate:
+Automated unit tests in `tests/M3/test_decision_rules.py` verify all six test cases (TC01–TC06), including state transitions and fail-safe recovery, with 100% pass rate:
 
 ```text
 ----------------------------------------------------------------------
 Running Decision Rule Test Suite (M3-DOC-01)
 ----------------------------------------------------------------------
-test_fail_safe_cleanup (test_decision_rules.TestDecisionRules.test_fail_safe_cleanup) ... ok
-test_tc01_helmet_only (test_decision_rules.TestDecisionRules.test_tc01_helmet_only) ... ok
-test_tc02_gloves_only (test_decision_rules.TestDecisionRules.test_tc02_gloves_only) ... ok
-test_tc03_both_detected (test_decision_rules.TestDecisionRules.test_tc03_both_detected) ... ok
-test_tc04_neither_detected (test_decision_rules.TestDecisionRules.test_tc04_neither_detected) ... ok
+test_tc01_helmet_only ... ok
+test_tc02_gloves_only ... ok
+test_tc03_both_detected ... ok
+test_tc04_neither_detected ... ok
+test_tc05_state_transitions_combined_to_individual ... ok
+test_tc06_fail_safe_cleanup ... ok
 
 ----------------------------------------------------------------------
-Ran 5 tests in 0.008s
+Ran 6 tests in 0.004s
 
 OK
 ```
@@ -100,3 +101,4 @@ OK
 
 - **Logic Verification:** Fully verified through automated unit tests (`tests/M3/test_decision_rules.py`) and live physical actuator demonstration (`evidence/M3/04_actuator/`).
 - **Hardware vs. Simulation:** The photos above depict physical PPE scenarios presented to the vision sensor. Software test logs verify the digital decision gates before hardware actuation.
+

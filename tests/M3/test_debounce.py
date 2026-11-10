@@ -98,7 +98,7 @@ class TestDebounceFilter(unittest.TestCase):
         self.assertGreater(self.filter.filtered_glitches_count, 0)
 
     def test_07_persistent_detections_and_three_led_truth_table(self):
-        """Test 7: Persistent detections trigger full Three-LED logic correctly."""
+        """Test 7: Persistent detections trigger authoritative Three-LED logic correctly."""
         self.filter.set_n(3)
 
         # Transition to BOTH detected (3 consecutive frames)
@@ -106,26 +106,26 @@ class TestDebounceFilter(unittest.TestCase):
             self.filter.process_frame(raw_helmet=True, raw_gloves=True)
 
         state = self.gpio.get_state()
-        self.assertTrue(state["green"]["active"], "LED 1 must be ON")
-        self.assertTrue(state["yellow"]["active"], "LED 2 must be ON")
-        self.assertTrue(state["red"]["active"], "LED 3 must be ON")
-        self.assertEqual(state["active_condition"], "ALL_ON")
+        self.assertFalse(state["green"]["active"], "LED 1 must be OFF when both detected")
+        self.assertFalse(state["yellow"]["active"], "LED 2 must be OFF when both detected")
+        self.assertTrue(state["red"]["blinking"], "LED 3 must be BLINKING when both detected")
+        self.assertEqual(state["active_condition"], "RED_BLINKING")
 
         # Record simulation timeline to CSV
-        out_dir = "evidence/M3/03_debounce"
+        out_dir = "evidence/M3/03_debounce/test_results"
         os.makedirs(out_dir, exist_ok=True)
         csv_path = os.path.join(out_dir, "debounce_verification_timeline.csv")
 
         timeline_data = [
-            ("Frame", "Raw_Helmet", "Raw_Gloves", "Debounced_Helmet", "Debounced_Gloves", "State_Changed", "LED1_Green", "LED2_Yellow", "LED3_Red"),
+            ("Frame", "Raw_Helmet", "Raw_Gloves", "Debounced_Helmet", "Debounced_Gloves", "State_Changed", "LED1_Green", "LED2_Yellow", "LED3_Red_Blinking"),
             (1, 1, 0, 0, 0, 0, 0, 0, 0),  # Glitch 1
             (2, 1, 0, 0, 0, 0, 0, 0, 0),  # Glitch 2
             (3, 0, 0, 0, 0, 0, 0, 0, 0),  # Reset!
             (4, 1, 1, 0, 0, 0, 0, 0, 0),  # Candidate Both (1/3)
             (5, 1, 1, 0, 0, 0, 0, 0, 0),  # Candidate Both (2/3)
-            (6, 1, 1, 1, 1, 1, 1, 1, 1),  # Confirmed Both (3/3) -> ALL 3 LEDS ON
-            (7, 1, 1, 1, 1, 0, 1, 1, 1),  # Persistent (no duplicate trigger)
-            (8, 1, 1, 1, 1, 0, 1, 1, 1),  # Persistent
+            (6, 1, 1, 1, 1, 1, 0, 0, 1),  # Confirmed Both (3/3) -> Red Blinking, Green & Yellow OFF
+            (7, 1, 1, 1, 1, 0, 0, 0, 1),  # Persistent (no duplicate trigger)
+            (8, 1, 1, 1, 1, 0, 0, 0, 1),  # Persistent
         ]
 
         with open(csv_path, mode="w", newline="") as f:

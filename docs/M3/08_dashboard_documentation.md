@@ -48,9 +48,9 @@ The AegisEdge dashboard provides an industrial-grade tactical monitoring human-m
 4. **Inspection Yield Card:** Historical pass percentage calculated across total session inspections.
 5. **Counts (Detected) Card:** Active count of helmets ($H$), gloved hands ($G$), bare hands ($BH$), and bare heads ($HD$).
 6. **Pi 5 LED Lights Mini-Tower:** Three glowing circular lamps matching the physical Raspberry Pi 5 stack lights:
-   - **Yellow ($Y$):** Pin 11 (`GPIO 17`) – Gloves indicator.
-   - **Green ($G$):** Pin 13 (`GPIO 27`) – Helmet indicator.
-   - **Red ($R$):** Pin 15 (`GPIO 22`) – Simultaneous presence indicator.
+   - **Yellow ($Y$):** Pin 11 (`GPIO 17`) – Gloves indicator (Active when gloves only).
+   - **Green ($G$):** Pin 13 (`GPIO 27`) – Helmet indicator (Active when helmet only).
+   - **Red ($R$):** Pin 15 (`GPIO 22`) – Simultaneous presence indicator (Blinks at 0.5s cadence when both detected; Green and Yellow remain OFF).
 
 ---
 
@@ -68,13 +68,13 @@ The AegisEdge dashboard provides an industrial-grade tactical monitoring human-m
 
 ## 4. Four Verified Test Scenarios
 
-Direct runtime screenshots captured from the live application under `evidence/M3/07_dashboard_screenshots/`:
+Direct runtime screenshots captured from the live application under `evidence/M3/08_dashboard_documentation/screenshots/`:
 
 | Scenario | Screenshot Filename | Helmet Bounding Box | Glove Bounding Box | Helmet LED | Glove LED | Both LED | Status Description |
 |---|---|---|---|---|---|---|---|
 | **Helmet Only** | `TC01_helmet_only.png` | **Visible (85%)** | Absent | **ON** | OFF | OFF | `GREEN LED ACTIVE (HELMET ONLY)` |
 | **Gloves Only** | `TC02_gloves_only.png` | Absent | **Visible (46%)** | OFF | **ON** | OFF | `YELLOW LED ACTIVE (GLOVES ONLY)` |
-| **Both Detected** | `TC03_both_detected.png`| **Visible (88%)** | **Visible (44%)** | **ON** | **ON** | **ON** | `ALL 3 LEDS ACTIVE (BOTH HELMET & GLOVES)` |
+| **Both Detected** | `TC03_both_detected.png`| **Visible (88%)** | **Visible (44%)** | **OFF** | **OFF** | **BLINKING** | `BOTH DETECTED – RED LED BLINKING` |
 | **Neither Detected**| `TC04_neither_detected.png`| Absent | Absent | OFF | OFF | OFF | `ALL LEDS OFF` |
 
 ---

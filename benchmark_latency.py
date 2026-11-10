@@ -13,8 +13,11 @@ from ultralytics import YOLO
 from gpio_manager import PiGPIOManager
 from debounce_filter import ConsecutiveFrameDebounceFilter
 
-def run_latency_benchmark(num_events: int = 30, output_dir: str = "evidence/M3/06_latency"):
-    os.makedirs(output_dir, exist_ok=True)
+def run_latency_benchmark(num_events: int = 30, output_dir: str = "evidence/M3/06_end_to_end_latency"):
+    bench_dir = os.path.join(output_dir, "benchmark_results")
+    chart_dir = os.path.join(output_dir, "charts")
+    os.makedirs(bench_dir, exist_ok=True)
+    os.makedirs(chart_dir, exist_ok=True)
     print(f"[Latency Benchmark] Initializing benchmark for {num_events} events...")
 
     # Load model and initialize GPIO controller
@@ -61,10 +64,10 @@ def run_latency_benchmark(num_events: int = 30, output_dir: str = "evidence/M3/0
 
         # 3. Decision Stage (Debounce + Three-LED Logic)
         deb_helmet, deb_gloves, _ = debouncer.process_frame(helmet_found, gloves_found)
-        # Apply M3 logic
-        helmet_led = deb_helmet
-        glove_led = deb_gloves
-        both_led = deb_helmet and deb_gloves
+        # Apply authoritative M3 logic
+        green_led = deb_helmet and not deb_gloves
+        yellow_led = deb_gloves and not deb_helmet
+        red_led_blink = deb_helmet and deb_gloves
         t_decision_done = time.perf_counter()
 
         # 4. Actuator Command Stage
@@ -94,7 +97,7 @@ def run_latency_benchmark(num_events: int = 30, output_dir: str = "evidence/M3/0
     gpio.cleanup()
 
     # Save to CSV
-    csv_path = os.path.join(output_dir, "latency_measurements.csv")
+    csv_path = os.path.join(bench_dir, "latency_measurements.csv")
     with open(csv_path, mode="w", newline="") as f:
         fieldnames = [
             "event_id", "t_capture_s", "t_inference_done_s", "t_decision_done_s", "t_actuator_done_s",
@@ -131,12 +134,12 @@ Breakdown by Pipeline Stage:
 """
     print(summary_text)
 
-    summary_path = os.path.join(output_dir, "latency_benchmark_summary.txt")
+    summary_path = os.path.join(bench_dir, "latency_benchmark_summary.txt")
     with open(summary_path, "w") as f:
         f.write(summary_text)
 
     # Generate Visualization Chart
-    chart_path = os.path.join(output_dir, "latency_distribution_chart.png")
+    chart_path = os.path.join(chart_dir, "latency_distribution_chart.png")
     plt.figure(figsize=(10, 5), dpi=150)
     plt.style.use("dark_background")
 

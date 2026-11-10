@@ -30,25 +30,28 @@ Our system controls exactly **THREE physical indicator LEDs** connected to the R
 $$\begin{aligned}
 \text{helmet\_detected} &= \text{count}(\text{helmet}) > 0 \\
 \text{glove\_detected}  &= \text{count}(\text{gloves}) > 0 \\
-\text{helmet\_led}      &= \text{helmet\_detected} \\
-\text{glove\_led}       &= \text{glove\_detected} \\
-\text{both\_led}        &= \text{helmet\_detected} \land \text{glove\_detected}
+\text{both\_detected}   &= \text{helmet\_detected} \land \text{glove\_detected} \\
+\text{green\_led}       &= \text{helmet\_detected} \land \neg \text{glove\_detected} \\
+\text{yellow\_led}      &= \text{glove\_detected} \land \neg \text{helmet\_detected} \\
+\text{red\_led\_blink}  &= \text{both\_detected}
 \end{aligned}$$
 
 ### Decision Truth Table
 
 | State | Helmet | Gloves | LED 1 – Helmet (Green) | LED 2 – Gloves (Yellow) | LED 3 – Both (Red) | Industrial System Status |
 |---|---|---|---|---|---|---|
-| **TC01** | **1** | 0 | **1 (ON)** | 0 (OFF) | 0 (OFF) | Helmet Only Detected |
-| **TC02** | 0 | **1** | 0 (OFF) | **1 (ON)** | 0 (OFF) | Gloves Only Detected |
-| **TC03** | **1** | **1** | **1 (ON)** | **1 (ON)** | **1 (ON)** | **Both Detected (ALL 3 LEDS ON)** |
-| **TC04** | 0 | 0 | 0 (OFF) | 0 (OFF) | 0 (OFF) | Neither Detected (Standby / Clear) |
+| **TC01** | **1** | 0 | **1 (ON)** | 0 (OFF) | 0 (OFF) | Helmet Only Detected (`GREEN`) |
+| **TC02** | 0 | **1** | 0 (OFF) | **1 (ON)** | 0 (OFF) | Gloves Only Detected (`YELLOW`) |
+| **TC03** | **1** | **1** | 0 (OFF) | 0 (OFF) | **BLINKING (0.5s)** | **Both Detected (`RED_BLINKING`)** |
+| **TC04** | 0 | 0 | 0 (OFF) | 0 (OFF) | 0 (OFF) | Neither Detected (Standby / Clear `OFF`) |
 
 > [!IMPORTANT]
-> **Key Functional Rule:**  
-> - **LED 1 (Green):** Helmet detection indicator. Turns ON whenever a helmet is detected.  
-> - **LED 2 (Yellow):** Glove detection indicator. Turns ON whenever protective gloves are detected.  
-> - **LED 3 (Red):** Combined detection indicator. Illuminates **ONLY** when **BOTH** helmet and gloves are detected simultaneously. When both are detected, **ALL THREE LEDs glow simultaneously**. LED 3 must never be used as a generic warning or system fault light.
+> **Key Functional Rules (Authoritative Specification):**  
+> - **LED 1 (Green):** Helmet detection indicator. Illuminates **ONLY** when a helmet is detected **without** gloves.  
+> - **LED 2 (Yellow):** Glove detection indicator. Illuminates **ONLY** when gloves are detected **without** a helmet.  
+> - **LED 3 (Red):** Combined detection indicator. Blinks at a 0.5s cadence **ONLY** when **BOTH** helmet and gloves are detected simultaneously. When Red is blinking, Green and Yellow **must remain OFF**.  
+> - LED 3 is strictly the Combined Indicator (`Both Detected`), **never** a general warning or system fault light.  
+> - Under no circumstances should all three LEDs illuminate or blink together. When neither item is detected, all LEDs remain OFF (safe idle state).
 
 ---
 
@@ -200,7 +203,7 @@ The following genuine screenshots were captured directly from the running web ap
 |---|---|---|---|
 | **Screenshot 1: Helmet Only** | ![TC01](evidence/M3/08_dashboard_documentation/screenshots/TC01_helmet_only.png) | **LED 1 ON (Green)**, LED 2 OFF, LED 3 OFF | **VERIFIED** |
 | **Screenshot 2: Gloves Only** | ![TC02](evidence/M3/08_dashboard_documentation/screenshots/TC02_gloves_only.png) | LED 1 OFF, **LED 2 ON (Yellow)**, LED 3 OFF | **VERIFIED** |
-| **Screenshot 3: Both Detected** | ![TC03](evidence/M3/08_dashboard_documentation/screenshots/TC03_both_detected.png) | **LED 1 ON (Green)**, **LED 2 ON (Yellow)**, **LED 3 ON (Red)** | **VERIFIED** |
+| **Screenshot 3: Both Detected** | ![TC03](evidence/M3/08_dashboard_documentation/screenshots/TC03_both_detected.png) | LED 1 OFF, LED 2 OFF, **LED 3 BLINKING (Red)** | **VERIFIED** |
 | **Screenshot 4: Neither Detected** | ![TC04](evidence/M3/08_dashboard_documentation/screenshots/TC04_neither_detected.png) | LED 1 OFF, LED 2 OFF, LED 3 OFF | **VERIFIED** |
 
 ---
@@ -217,9 +220,12 @@ Comprehensive physical evidence and demonstration footage are archived in their 
   - `frame_actuator_01_idle_all_off.png` ($t = 0.60\,\text{s}$): Neither detected $\to$ All 3 LEDs OFF (`[0, 0, 0]`).
   - `frame_actuator_02_helmet_only_green_on.png` ($t = 3.00\,\text{s}$): Helmet only $\to$ **Green LED ON**, Yellow & Red OFF (`[1, 0, 0]`).
   - `frame_actuator_03_gloves_only_yellow_on.png` ($t = 18.17\,\text{s}$): Gloves only $\to$ **Yellow LED ON**, Green & Red OFF (`[0, 1, 0]`).
-  - `frame_actuator_04_both_detected_all_three_on.png` ($t = 24.50\,\text{s}$): Both detected $\to$ **ALL THREE LEDs (Green, Yellow, Red) ON SIMULTANEOUSLY** (`[1, 1, 1]`).
-  - `frame_actuator_05_both_detected_sustained.png` ($t = 35.00\,\text{s}$): Both detected (Retest) $\to$ All 3 LEDs ON.
+  - `frame_actuator_04_both_detected_all_three_on.png` ($t = 24.50\,\text{s}$): Legacy hardware test recording (worker presents both items).
+  - `frame_actuator_05_both_detected_sustained.png` ($t = 35.00\,\text{s}$): Legacy hardware test recording (sustained dual presence).
   - `frame_actuator_06_return_idle_all_off.png` ($t = 44.67\,\text{s}$): Return to idle $\to$ All 3 LEDs OFF.
+
+> [!NOTE]
+> **Historical Artifact Note:** Video `3_led_blinking_actuator_video.mp4` documents the initial physical bench test where all three LEDs were energized simultaneously. The authoritative M3 logic requires the Red LED to blink while Green and Yellow remain strictly OFF during dual detection. The updated software stack and automated unit tests (`tests/M3/`) execute and verify the Red Blinking specification with 100% test pass rate. A scheduled physical re-recording reflecting the dedicated Red blinking state is documented in the [Actuator Evidence README](evidence/M3/04_actuator/README.md).
 
 ### 9.2 Raspberry Pi 5 & Live Camera Hardware Evidence – Subtopic 09
 - **Subtopic Folder:** [`evidence/M3/09_raspberry_pi_hardware_and_camera/`](evidence/M3/09_raspberry_pi_hardware_and_camera/)

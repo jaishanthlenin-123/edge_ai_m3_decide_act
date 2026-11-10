@@ -101,7 +101,7 @@ The real-time screen recording [`screen_recordings/dashboard_screen_record.mp4`]
 |---|---|---|---|---|---|
 | **TC01: Helmet Only** | ![TC01](screenshots/TC01_helmet_only.png) | **ON** | OFF | OFF | Partial Compliance |
 | **TC02: Gloves Only** | ![TC02](screenshots/TC02_gloves_only.png) | OFF | **ON** | OFF | Partial Compliance |
-| **TC03: Both Detected** | ![TC03](screenshots/TC03_both_detected.png) | **ON** | **ON** | **ON** | **FULL COMPLIANCE (ALL 3 LEDS ON)** |
+| **TC03: Both Detected** | ![TC03](screenshots/TC03_both_detected.png) | OFF | OFF | **BLINKING** | **FULL COMPLIANCE (RED BLINKING, GREEN & YELLOW OFF)** |
 | **TC04: Neither Detected** | ![TC04](screenshots/TC04_neither_detected.png) | OFF | OFF | OFF | Violation / Idle |
 
 ---
@@ -120,3 +120,4 @@ chmod +x run_dashboard.sh
 python -m uvicorn server:app --host 0.0.0.0 --port 8000
 ```
 Open `http://localhost:8000` in any web browser.
+

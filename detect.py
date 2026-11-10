@@ -252,26 +252,35 @@ def main():
             )
 
             # Render 3 Physical LED Tower Indicators in HUD (Upper Right)
-            # Yellow: Pin 11 (Gloves Only)
-            y_on = led_state["yellow"]["active"]
+            r_blink = led_state["red"].get("blinking", False)
+
+            # Yellow: Pin 11 (Gloves Only) - strictly OFF if Red is blinking
+            y_on = False if r_blink else led_state["yellow"]["active"]
             y_col = (0, 214, 255) if y_on else (25, 55, 65)
             cv2.circle(annotated_frame, (w - 180, 18), 6, y_col, -1)
             if y_on: cv2.circle(annotated_frame, (w - 180, 18), 8, (0, 214, 255), 1)
             cv2.putText(annotated_frame, "Y:P11", (w - 170, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.35, y_col, 1)
 
-            # Green: Pin 13 (Helmet Only)
-            g_on = led_state["green"]["active"]
+            # Green: Pin 13 (Helmet Only) - strictly OFF if Red is blinking
+            g_on = False if r_blink else led_state["green"]["active"]
             g_col = (60, 225, 60) if g_on else (20, 60, 30)
             cv2.circle(annotated_frame, (w - 125, 18), 6, g_col, -1)
             if g_on: cv2.circle(annotated_frame, (w - 125, 18), 8, (60, 225, 60), 1)
             cv2.putText(annotated_frame, "G:P13", (w - 115, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.35, g_col, 1)
 
-            # Red: Pin 15 (Both Helmet & Gloves)
-            r_on = led_state["red"]["active"]
-            r_col = (60, 60, 245) if r_on else (30, 30, 75)
-            cv2.circle(annotated_frame, (w - 70, 18), 6, r_col, -1)
-            if r_on: cv2.circle(annotated_frame, (w - 70, 18), 8, (60, 60, 245), 1)
-            cv2.putText(annotated_frame, "R:P15", (w - 60, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.35, r_col, 1)
+            # Red: Pin 15 (Both Helmet & Gloves - Blinking when both detected)
+            r_active = led_state["red"]["active"]
+            if r_blink:
+                r_flash = (int(time.time() * 2) % 2 == 0)
+                r_col = (60, 60, 245) if r_flash else (30, 30, 75)
+                cv2.circle(annotated_frame, (w - 70, 18), 6, r_col, -1)
+                if r_flash: cv2.circle(annotated_frame, (w - 70, 18), 8, (60, 60, 245), 1)
+                cv2.putText(annotated_frame, "R:BLINK", (w - 60, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.35, r_col, 1)
+            else:
+                r_col = (60, 60, 245) if r_active else (30, 30, 75)
+                cv2.circle(annotated_frame, (w - 70, 18), 6, r_col, -1)
+                if r_active: cv2.circle(annotated_frame, (w - 70, 18), 8, (60, 60, 245), 1)
+                cv2.putText(annotated_frame, "R:P15", (w - 60, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.35, r_col, 1)
 
             # Bottom Stats Bar
             cv2.rectangle(annotated_frame, (0, h - 26), (w, h), (20, 20, 20), -1)

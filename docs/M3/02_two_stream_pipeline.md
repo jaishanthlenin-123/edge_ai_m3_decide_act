@@ -64,40 +64,45 @@ To eliminate thrashing, the system enforces the **Logical Union (OR) Arbitration
 
 $$\text{helmet\_active}_{\text{sys}} = \text{helmet}_{\text{stream1}} \lor \text{helmet}_{\text{stream2}}$$
 $$\text{glove\_active}_{\text{sys}} = \text{gloves}_{\text{stream1}} \lor \text{gloves}_{\text{stream2}}$$
-$$\text{both\_active}_{\text{sys}} = \text{helmet\_active}_{\text{sys}} \land \text{glove\_active}_{\text{sys}}$$
+$$\text{green\_led} = \text{helmet\_active}_{\text{sys}} \land \neg \text{glove\_active}_{\text{sys}}$$
+$$\text{yellow\_led} = \text{glove\_active}_{\text{sys}} \land \neg \text{helmet\_active}_{\text{sys}}$$
+$$\text{red\_led\_blink} = \text{helmet\_active}_{\text{sys}} \land \text{glove\_active}_{\text{sys}}$$
 
 ### Arbitration Truth Table
 
 | Stream 1 Detection | Stream 2 Detection | Arbitrated Helmet | Arbitrated Gloves | LED 1 (Green) | LED 2 (Yellow) | LED 3 (Red) | Actuator State |
 |---|---|---|---|---|---|---|---|
-| Helmet Only | Neither | `True` | `False` | **ON** | OFF | OFF | Helmet Indicator Active |
-| Neither | Gloves Only | `False` | `True` | OFF | **ON** | OFF | Gloves Indicator Active |
-| **Helmet Only** | **Gloves Only** | **`True`** | **`True`** | **ON** | **ON** | **ON** | **Composite PPE Verified (ALL ON)** |
-| Both Detected | Neither | `True` | `True` | **ON** | **ON** | **ON** | **All 3 LEDs ON** |
-| Neither | Neither | `False` | `False` | OFF | OFF | OFF | All LEDs OFF (Standby) |
+| Helmet Only | Neither | `True` | `False` | **ON** | OFF | OFF | Helmet Indicator Active (`GREEN`) |
+| Neither | Gloves Only | `False` | `True` | OFF | **ON** | OFF | Gloves Indicator Active (`YELLOW`) |
+| **Helmet Only** | **Gloves Only** | **`True`** | **`True`** | **OFF** | **OFF** | **BLINKING** (0.5s) | **Composite PPE Verified (`RED_BLINKING`)** |
+| Both Detected | Neither | `True` | `True` | **OFF** | **OFF** | **BLINKING** (0.5s) | **Both Detected (`RED_BLINKING`)** |
+| Neither | Neither | `False` | `False` | OFF | OFF | OFF | All LEDs OFF (Standby `OFF`) |
 
 ---
 
 ## 4. Verification & Automated Test Evidence
 
 Automated test script `tests/M3/test_two_stream_pipeline.py` executes 4 unit tests validating the multi-stream pipeline:
-1. `test_01_simultaneous_execution_and_independent_fps`: Validated concurrent execution with Stream 1 at $3.4\,\text{FPS}$ and Stream 2 at $3.4\,\text{FPS}$.
+1. `test_01_simultaneous_execution_and_independent_fps`: Validated concurrent execution with Stream 1 at $13.0\,\text{FPS}$ and Stream 2 at $13.0\,\text{FPS}$.
 2. `test_02_independent_detection_results`: Stream 1 detected helmets while Stream 2 detected gloves independently without cross-talk.
-3. `test_03_actuator_arbitration_logic`: Proved composite arbitration—when Stream 1 observed a helmet and Stream 2 observed gloves, the arbitrator successfully illuminated all 3 LEDs (`ALL 3 LEDS ACTIVE (BOTH HELMET & GLOVES)`).
+3. `test_03_actuator_arbitration_logic`: Proved composite arbitration—when Stream 1 observed a helmet and Stream 2 observed gloves, the arbitrator activated the Red blinking actuator while holding Green and Yellow OFF (`BOTH DETECTED – RED LED BLINKING`).
 4. `test_04_save_dual_stream_evidence`: Rendered and exported dual-view tactical HUD frame to `evidence/M3/02_two_stream_pipeline/two_stream_fps_and_feed.png`.
 
 ### Test Execution Log:
 ```text
 [TwoStream] Initializing shared model from best.pt...
 [TwoStream] Both stream workers started with actuator arbitration.
-[Test 1] Stream 1 (STATION-01 (ASSEMBLY)): FPS=3.4, Status=STREAMING
-[Test 1] Stream 2 (STATION-02 (INSPECTION)): FPS=3.4, Status=STREAMING
+[Test 1] Stream 1 (STATION-01 (ASSEMBLY)): FPS=13.0, Status=STREAMING
+[Test 1] Stream 2 (STATION-02 (INSPECTION)): FPS=13.0, Status=STREAMING
 [Test 2] Stream 1 Counts: {'helmet': 2, 'gloves': 0, 'head': 0, 'bare_hand': 0, 'total': 2}
 [Test 2] Stream 2 Counts: {'helmet': 0, 'gloves': 1, 'head': 0, 'bare_hand': 0, 'total': 1}
-[Test 3] Arbitrated GPIO State: ALL 3 LEDS ACTIVE (BOTH HELMET & GLOVES)
+[Test 3] Arbitrated GPIO State: BOTH DETECTED – RED LED BLINKING
 [Test 4] Saved Dual-Stream Evidence to: evidence/M3/02_two_stream_pipeline/two_stream_fps_and_feed.png
 ----------------------------------------------------------------------
-Ran 4 tests in 11.582s
+Ran 4 tests in 8.263s
+
+OK
+```
 OK
 ```
 
