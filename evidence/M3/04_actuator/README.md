@@ -10,6 +10,11 @@
 
 This subtopic presents complete empirical verification of the physical three-LED actuator subsystem. The system interfaces the Raspberry Pi 5 40-pin GPIO header to three discrete indicator LEDs through current-limiting resistors, enforcing the non-mutually exclusive Milestone 3 decision truth table.
 
+### Photos & Videos Evidence – M3
+
+All practical demonstration photographs, hardware images, screenshots and video recordings documenting the M3 Decide and Act milestone are organized in the following Google Drive folder:
+- [Open M3 Photos & Videos Evidence Folder](https://drive.google.com/drive/folders/1eR4t6DHBIOZSHFPM-tkM5uoL93MMoAjN?usp=sharing)
+
 ---
 
 ## 2. Hardware Pin Configuration & Circuit Schematic

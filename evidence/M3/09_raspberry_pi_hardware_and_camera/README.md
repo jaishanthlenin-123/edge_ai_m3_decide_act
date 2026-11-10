@@ -10,6 +10,11 @@
 
 This subtopic preserves authentic empirical evidence of the physical single-board computer (SBC) hardware workbench, thermal cooling configuration, camera sensor mounting, and on-device execution environment on the Raspberry Pi 5.
 
+### Photos & Videos Evidence – M3
+
+All practical demonstration photographs, hardware images, screenshots and video recordings documenting the M3 Decide and Act milestone are organized in the following Google Drive folder:
+- [Open M3 Photos & Videos Evidence Folder](https://drive.google.com/drive/folders/1eR4t6DHBIOZSHFPM-tkM5uoL93MMoAjN?usp=sharing)
+
 ---
 
 ## 2. Hardware System Specifications

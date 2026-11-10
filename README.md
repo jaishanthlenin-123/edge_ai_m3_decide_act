@@ -132,6 +132,14 @@ The model checkpoint `best.pt` was trained on a dataset exported from Roboflow U
 
 ---
 
+## Photos & Videos Evidence – M3
+
+All practical demonstration photographs, hardware images, screenshots and video recordings documenting the M3 Decide and Act milestone are organized in the following Google Drive folder.
+
+[Open M3 Photos & Videos Evidence Folder](https://drive.google.com/drive/folders/1eR4t6DHBIOZSHFPM-tkM5uoL93MMoAjN?usp=sharing)
+
+---
+
 ## 6. Milestone 3 (M3) Nine-Subtopic Evidence Structure
 
 The evidence in this repository follows the modular, folder-based subtopic architecture modeled after M2:
@@ -209,6 +217,9 @@ The following genuine screenshots were captured directly from the running web ap
 ---
 
 ## 9. Physical Hardware, Actuator Circuit & Video Demonstration Evidence
+
+All practical demonstration photographs, hardware images, screenshots and video recordings documenting the M3 Decide and Act milestone are organized in the following Google Drive folder:
+- **M3 Photos & Videos Evidence Folder (Google Drive):** [Open M3 Photos & Videos Evidence Folder](https://drive.google.com/drive/folders/1eR4t6DHBIOZSHFPM-tkM5uoL93MMoAjN?usp=sharing)
 
 Comprehensive physical evidence and demonstration footage are archived in their dedicated subtopics:
 
